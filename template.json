@@ -1,0 +1,276 @@
+{
+  "Actor": {
+    "types": ["character"],
+    "templates": {
+      "base": {
+	"bonuses":{
+	  "stunt": 0
+	},
+        "health": {
+          "value": 10,
+          "min": 0,
+          "max": 10
+        },
+        "composure": {
+          "value": 10,
+          "min": 0,
+          "max": 10
+        },
+	"status":{
+        "wounds": {
+          "value": 0,
+          "min": 0,
+          "max": 3
+        },
+        "injuries": {
+          "value": 0,
+          "min": 0,
+          "max": 3
+        },
+        "fatigue": {
+          "value": 0,
+          "min": 0,
+          "max": 3
+        },
+        "frustrations": {
+          "value": 0,
+          "min": 0,
+          "max": 3
+        }
+	},
+	"combat": {
+	  "armor": 0,
+	  "defense": 0,
+	  "defensebonus": 0,
+	  "bulk": 0,
+	  "armorpenalty": 0,
+	  "armorname": ""
+	},
+	"socialcombat": {
+	  "defense": 0,
+	  "defensebonus": 0,
+	  "disposition": 4
+	},
+      
+	  
+      "abilities": {
+        "agility": {
+          "value": 2,
+	  "special": {
+		  "acrobatics": 0,
+		  "balance": 0,
+		  "contortions": 0,
+		  "dodge": 0,
+		  "quickness": 0
+	  }
+
+        },
+        "animalhandling": {
+          "value": 2,
+	  "special": {
+		  "charm": 0,
+		  "drive": 0,
+		  "ride": 0,
+		  "train": 0
+	  }
+        },
+        "athletics": {
+          "value": 2,
+	  "special": {
+		  "climb": 0,
+		  "jump": 0,
+		  "run": 0,
+		  "strength": 0,
+		  "swim": 0,
+		  "throw": 0
+	  }
+        },
+        "awareness": {
+          "value": 2,
+	  "special": {
+		  "empathy": 0,
+		  "notice": 0
+	  }
+        },
+        "cunning": {
+          "value": 2,
+	  "special": {
+		  "decipher": 0,
+		  "logic": 0,
+		  "memory": 0
+	  }
+        },
+        "deception": {
+          "value": 2,
+	  "special": {
+		  "act": 0,
+		  "bluff": 0,
+		  "cheat": 0,
+		  "disguise": 0
+	  }
+        },
+        "endurance": {
+          "value": 2,
+	  "special": {
+		  "resilience": 0,
+		  "stamina": 0
+	  }
+        },
+        "fighting": {
+          "value": 2,
+	  "special": {
+		  "axes": 0,
+		  "bludgeons": 0,
+		  "brawling": 0,
+		  "fencing": 0,
+		  "longblades": 0,
+		  "polearms": 0,
+		  "shields": 0,
+		  "shortblades": 0,
+		  "spears": 0
+	  }
+        },
+        "healing": {
+          "value": 2,
+	  "special": {
+		  "diagnose": 0,
+		  "treatailment": 0,
+		  "treatinjury": 0
+	  }
+        },
+        "language": {
+          "value": 2,
+	  "special": {
+		  "custom1": 0,
+		  "custom2": 0,
+		  "custom3": 0,
+		  "custom4": 0,
+		  "custom5": 0
+	  }
+        },
+        "knowledge": {
+          "value": 2,
+	  "special": {
+		  "education": 0,
+		  "research": 0,
+		  "streetwise": 0
+	  }
+        },
+        "marksmanship": {
+          "value": 2,
+	  "special": {
+		  "bows": 0,
+		  "crossbows": 0,
+		  "siege": 0,
+		  "thrown": 0,
+		  "blackpowder": 0
+	  }
+        },
+        "persuasion": {
+          "value": 2,
+	  "special": {
+		  "bargain": 0,
+		  "charm": 0,
+		  "convince": 0,
+		  "incite": 0,
+		  "intimidate": 0,
+		  "seduce": 0,
+		  "taunt": 0
+	  }
+        },
+        "status": {
+          "value": 2,
+	  "special": {
+		  "breeding": 0,
+		  "reputation": 0,
+		  "stewardship": 0,
+		  "tournaments": 0
+	  }
+        },
+        "stealth": {
+          "value": 2,
+	  "special": {
+		  "blendin": 0,
+		  "sneak": 0
+	  }
+        },
+        "survival": {
+          "value": 2,
+	  "special": {
+		  "forage": 0,
+		  "hunt": 0,
+		  "orientation": 0,
+		  "track": 0
+	  }
+        },
+        "thievery": {
+          "value": 2,
+	  "special": {
+		  "picklock": 0,
+		  "sleightofhand": 0,
+		  "steal": 0
+	  }
+        },
+        "warfare": {
+          "value": 2,
+	  "special": {
+		  "command": 0,
+		  "strategy": 0,
+		  "tactics": 0
+	  }
+        },
+        "will": {
+          "value": 2,
+	  "special": {
+		  "courage": 0,
+		  "coordinate": 0,
+		  "dedication": 0
+	  }
+        }
+      }
+
+      }
+    },
+    "character": {
+      "templates": ["base"],
+      "biography": "",
+      "attributes": {
+        "level": {
+          "value": 1
+        }
+      }    }
+  },
+  "Item": {
+    "types": ["item", "feature", "spell","weapon"],
+    "templates": {
+      "base": {
+        "description": ""
+      }
+    },
+    "item": {
+      "templates": ["base"],
+      "quantity": 1,
+      "weight": 0
+    },
+    "weapon": {
+      "templates": ["base"],
+      "type": "melee",
+      "special": "longblades",
+      "training": 0,
+      "bulk": 0,
+      "damage": 1,
+      "damageability": "none",
+      "quality": "1",
+      "notes": "",
+      "damageabilities":["none","agility","athletics","animalhandling"],
+      "specialtypes": {"melee":["none","axes","bludgeons","brawling","fencing","longblades","polearms","shields","shortblades","spears"],"ranged":["none","bows","crossbows","siege","thrown","blackpowder"]}
+    },
+    "feature": {
+      "templates": ["base"]
+    },
+    "spell": {
+      "templates": ["base"],
+      "spellLevel": 1
+    }
+  }
+}

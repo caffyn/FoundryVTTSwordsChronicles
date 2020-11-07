@@ -1,0 +1,62 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            <div class="grid grid-2col">
+              <div class="resource">
+                <label class="resource-label">Quantity</label>
+                  <input type="text" name="data.quantity" value="{{data.quantity}}" data-dtype="Number"/>
+              </div>
+              <div class="resource">
+                <label class="resource-label">Weight</label>
+                  <input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number"/>
+              </div>
+            </div>
+        </div>
+    </header>
+    </nav>
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        {{!-- Attributes Tab --}}
+	<div class-"resource">
+		{{log data.damageabilities}}
+                <label class="resource-label">Damage Ability:</label>
+		<select name="data.damageability">
+			{{#each data.damageabilities as |item id|}}
+			<option value="{{item}}" {{#if (eq item ../data.damageability)}} selected {{/if}} >{{item}}</option>
+			{{/each}}
+		</select>
+		<select name="data.type">
+			<option value="ranged" {{#if (eq "ranged" data.type)}} selected {{/if}} >ranged</option>
+			<option value="melee" {{#if (eq "melee" data.type)}} selected {{/if}} >melee</option>
+		</select>
+                <label class="resource-label">Special:</label>
+		<select name="data.special">
+			{{#each (lookup data.specialtypes data.type) as |item id|}}
+			<option value="{{item}}" {{#if (eq item ../data.special)}} selected {{/if}} >{{item}}</option>
+			{{/each}}
+		</select>
+                <label class="resource-label">Quality</label>
+		<select name="data.quality">
+			{{log data.quality}}
+			<option value="0" {{#if (eq data.quality "0")}} selected {{/if}} >Peasant</option>
+			<option value="1" {{#if (eq data.quality "1")}} selected {{/if}} >Standard</option>
+			<option value="2" {{#if (eq data.quality "2")}} selected {{/if}} >Superior</option>
+			<option value="3" {{#if (eq data.quality "3")}} selected {{/if}} >Extraordinary</option>
+		</select>
+                <label class="resource-label">Training</label>
+                  <input type="number" name="data.training" value="{{data.training}}" data-dtype="Number" width="4"/>
+		  <label class="resource-label">Bulk</label>
+                  <input type="number" name="data.bulk" value="{{data.bulk}}" data-dtype="Number" size="4"/>
+		  <label class="resource-label">Damage</label>
+                  <input type="number" name="data.damage" value="{{data.damage}}" data-dtype="Number" size="4"/>
+		  <label class="resource-label">Notes</label>
+                  <input type="text" name="data.notes" value="{{data.notes}}" />
+              </div>
+		
+            {{!-- As you add new fields, add them in here! --}}
+
+
+    </section>
+</form>
