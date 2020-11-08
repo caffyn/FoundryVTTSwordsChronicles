@@ -93,6 +93,8 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     if(actorData.data.composure.value > actorData.data.composure.max){
 	   actorData.data.composure.value=actorData.data.composure.max; 
     }
+    actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus;
+    actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus;
 
     // Assign and return
     actorData.gear = gear;
@@ -132,6 +134,8 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     
     //Attacks
     html.find('.attack').click(this._attack.bind(this));
+    //Social Attacks
+    html.find('.socialattack').click(this._socialAttack.bind(this));
 
     // Drag events for macros.
     if (this.actor.owner) {
@@ -171,6 +175,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     return this.actor.createOwnedItem(itemData);
   }
 _handleStunt(flavor,total,keep,flatbonus=0,stuntbonus=0){
+	console.log("this is a stunt");
     let d = new Dialog({
 	    title: "Stunt",
 	    content: "Enter stunt level. Majestic is counted",
@@ -201,11 +206,47 @@ _handleStunt(flavor,total,keep,flatbonus=0,stuntbonus=0){
 
 _performRoll(flavor,total,keep,flatbonus=0){
     let temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: flatbonus});
+    console.log('debug',temp);
     temp.roll().toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor: flavor
       });
 }
+
+  _socialAttack(event) {
+	event.preventDefault();
+	const element = event.currentTarget;
+	const dataset = element.dataset;
+	const data=this.actor.data.data;
+	const ability=data.abilities[dataset.ability].value;
+	const special=data.abilities[dataset.ability].special[dataset.special];
+	const damage=data.abilities[dataset.damage].value;
+	const attacktype=dataset.flavor;
+	//TODO: Intimidate can be Act or Bluff when deceiving. 
+	
+	var total=ability;
+	var keep=total;
+	if (special > total){
+		total = total * 2;
+	}else{
+		total= total+special;
+	}
+	var flatbonus=0;
+
+	//Now, to handle injuries, wounds,fatigue, and frustration
+	flatbonus -= data.status.fatigue.value;
+	flatbonus -= data.status.injuries.value;
+	keep -= data.status.wounds.value;
+	keep -= data.status.frustrations.value;
+
+	var flavor="Attacks with "+ attacktype + " for " + damage + " influence";
+	if(data.config.usestunts == "yes"){
+		this._handleStunt(flavor,total,keep,0,data.config.stuntbonus);
+	}else{
+		this._performRoll(flavor,total,keep);
+	}
+
+  }
 
   _attack(event) {
 	event.preventDefault();
@@ -217,11 +258,11 @@ _performRoll(flavor,total,keep,flatbonus=0){
 		var temp=items[i];
 		if(temp._id == id){
 			var weapon=temp.data;
+			var name=temp.name;
 		}
 	}
 	//var weapon = this.actor.data.items[dataset.attindex].data;
 	const data=this.actor.data.data;
-	var name = this.actor.data.items[dataset.attindex].name
 	var flatbonus=0;
 	if(weapon.type == "melee"){
 		    var ability="fighting";
@@ -258,8 +299,17 @@ _performRoll(flavor,total,keep,flatbonus=0){
 		damage+=1;
 		flatbonus+=1;
 	}
+	//Now, to handle injuries, wounds, and fatigue. 
+	flatbonus -= data.status.fatigue.value;
+	flatbonus -= data.status.injuries.value;
+	keep -= data.status.wounds.value;
+	
 	var flavor="Attacks with "+ name + " for " + damage + " damage";
-	this._handleStunt(flavor,total,keep,flatbonus,data.bonuses.stunt);
+	if(data.config.usestunts == "yes"){
+		this._handleStunt(flavor,total,keep,flatbonus,data.config.stuntbonus);
+	}else{
+		this._performRoll(flavor,total,keep,flatbonus);
+	}
 
   }
 
@@ -297,7 +347,11 @@ _performRoll(flavor,total,keep,flatbonus=0){
 	    }else {
 		    flavor += "None";
 	    }
-	    this._handleStunt(flavor,score,keep,0,this.actor.data.data.bonuses.stunt);
+	if(this.actor.data.data.config.usestunts == "yes"){
+		this._handleStunt(flavor,score,keep,0,this.actor.data.data.config.stuntbonus);
+	}else{
+		this._performRoll(flavor,score,keep,0);
+	}
 
 	    
 	    //TODO: add proper penalties

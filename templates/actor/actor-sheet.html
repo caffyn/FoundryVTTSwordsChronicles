@@ -51,10 +51,12 @@
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="description">Description</a>
         <a class="item" data-tab="weapon">Combat</a>
+        <a class="item" data-tab="social">Social</a>
         <a class="item" data-tab="abilities">Abilities</a>
         <a class="item" data-tab="items">Items</a>
         <a class="item" data-tab="features">Features</a>
-        <a class="item" data-tab="spells">Spells</a>
+        <a class="item" data-tab="config">Config</a>
+	<!-- <a class="item" data-tab="spells">Spells</a> -->
     </nav>
 
     {{!-- Sheet Body --}}
@@ -65,17 +67,82 @@
             {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
         </div>
 			
+        {{!-- Social Combat Tab --}}
+        <div class="tab items" data-group="primary" data-tab="social">
+            <div class="resources grid grid-2col">
+
+              <div class="resource flex-group-center">
+		      <label for="data.socialcombat.defense" class="resource-label" title="data.socialcombat.defense">{{localize "swords.combat.defense"}}</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+			  <input type="text" name="data.socialcombat.defense" value="{{data.socialcombat.defense}}" data-dtype="Number"title="data.socialcombat.defense"/>
+                  </div>
+              </div>
+              <div class="resource flex-group-center">
+		      <label for="data.socialcombat.defensebonus" class="resource-label" title="data.socialcombat.defensebonus">{{localize "swords.combat.defensebonus"}}</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+			  <input type="text" name="data.socialcombat.defensebonus" value="{{data.socialcombat.defensebonus}}" data-dtype="Number"title="data.socialcombat.defensebonus"/>
+                  </div>
+              </div>
+		
+		 </div>
+		 <ol class="items-list">
+                <li class="item flexrow">
+			<h4 class="resource-label" title="Bargain Technique">Bargain</h4>
+		    <div class="resource-label" title="Cunning: {{data.abilities.cunning.value}}">Damage: {{data.abilities.cunning.value}} </div>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="bargain" data-flavor="Persuade: Bargain technique" data-damage="cunning" title="Paragon Path">Bargain</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="bluff" data-flavor="Decieve: Bargain technique" data-damage="cunning"title="Renegade Path">Bluff</h4>
+		</li>
+                <li class="item flexrow">
+		      <h4 class="resource-label" title="Charm technique">Charm</h4>
+		      <h4 class="resource-label" title="Persuasion: {{data.abilities.persuasion.value}}">Damage: {{data.abilities.persuasion.value}}</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="charm" data-flavor="Persuade: Charm technique" data-damage="persuasion" title="Paragon Path">Charm</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="act" data-flavor="Decieve: Charm technique" data-damage="persuasion" title="Renegade Path">Act</h4>
+		</li>	
+                <li class="item flexrow">
+		      <h4 class="resource-label" title="Convince technique">Convince</h4>
+		      <h4 class="resource-label" title="Will: {{data.abilities.will.value}}">Damage: {{data.abilities.will.value}}</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="convince" data-flavor="Persuade: Convince technique" data-damage="cunning" title="Paragon Path">Convince</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="bluff" data-flavor="Decieve: Convince technique" data-damage="cunning"title="Renegade Path">Act</h4>
+		</li>
+                <li class="item flexrow">
+		      <h4 class="resource-label" title="Incite technique">Incite</h4>
+		      <h4 class="resource-label" title="Cunning: {{data.abilities.cunning.value}}">Damage: {{data.abilities.cunning.value}}</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="incite" data-flavor="Persuade: Incite technique" data-damage="cunning" title="Paragon Path">Incite</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="bluff" data-flavor="Decieve: Incite technique" data-damage="cunning" title="Renegade Path">Bluff</h4>
+		</li>
+		
+                <li class="item flexrow">
+		      <h4 class="resource-label" title="Intimidate technique">Intimidate</h4>
+		      <h4 class="resource-label" title="Will: {{data.abilities.will.value}}">Damage: {{data.abilities.will.value}}</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="intimidate" data-flavor="Persuade: Intimidate technique" data-damage="will" title="Paragon Path">Intimidate</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="act" data-flavor="Decieve: Intimidate technique (Act)" data-damage="will" title="Renegade Path">Act</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="bluff" data-flavor="Decieve: Intimidate technique (Bluff)" data-damage="will" title="Renegade Path">Bluff</h4>
+		</li>
+                <li class="item flexrow">
+		      <h4 class="resource-label" title="Seduce technique">Seduce</h4>
+		      <h4 class="resource-label" title="Persuasion: {{data.abilities.persuasion.value}}">Damage: {{data.abilities.persuasion.value}}</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="bargain" data-flavor="Persuade: Seduce technique" data-damage="persuasion" title="Paragon Path">Seduce</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="bluff" data-flavor="Decieve: Seduce technique" data-damage="cunning" title="Renegade Path">Bluff</h4>
+		</li>
+                <li class="item flexrow">
+		      <h4 class="resource-label" title="Taunt technique">Taunt</h4>
+		      <h4 class="resource-label" title="Cunning: {{data.abilities.cunning.value}}">Damage: {{data.abilities.cunning.value}}</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="persuasion" data-special="bargain" data-flavor="Persuade: Taunt technique" data-damage="cunning" title="Paragon Path">Taunt</h4>
+	      <h4 class="box rollable resource-label socialattack" data-ability="deception" data-special="bluff" data-flavor="Decieve: Taunt technique" data-damage="cunning" title="Renegade Path">Bluff</h4>
+		</li>
+		 </ol>
+        </div>
 			
 
         {{!-- Combat Tab --}}
         <div class="tab items" data-group="primary" data-tab="weapon">
-            <div class="resources grid grid-3col">
+            <div class="resources grid grid-6col">
 		    {{#each data.combat as |statusval statusname|}}
 
               <div class="resource flex-group-center">
-		      <label for="data.combat.{{statusname}}" class="resource-label">{{statusname}}</label>
+		      <label for="data.combat.{{statusname}}" class="resource-label" title="data.combat.{{statusname}}">{{localize (concat "swords.combat." statusname)}}</label>
                   <div class="resource-content flexrow flex-center flex-between">
-			  <input type="text" name="data.combat.{{statusname}}.value" value="{{statusval.value}}" data-dtype="Number"/>
+			  <input type="text" name="data.combat.{{statusname}}" value="{{statusval}}" {{#unless (eq statusname "armorname")}}data-dtype="Number" {{/unless}} title="data.combat.{{statusname}}"/>
                   </div>
               </div>
 		    {{/each}}
@@ -105,6 +172,18 @@
             </ol>
         </div>
 
+        {{!-- Config Tab --}}
+        <div class="tab items" data-group="primary" data-tab="config">
+            <ol class="items-list">
+                <li class="item flexrow item-header">
+		<select name="data.config.usestunts" >
+			{{log data.config}}
+		<option value="yes" {{#if (eq data.config.usestunts "yes")}}selected {{/if}}>Enable Stunts</option>
+		<option value="no" {{#if (eq data.config.usestunts "no")}}selected {{/if}}>Disable Stunts</option>
+		</select>
+                </li>
+            </ol>
+        </div>
         {{!-- Owned Items Tab --}}
         <div class="tab items" data-group="primary" data-tab="items">
             <ol class="items-list">

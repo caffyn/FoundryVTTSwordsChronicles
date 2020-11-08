@@ -1,1 +1,8 @@
-{}
+{
+	"swords.combat.armor": "Armor",
+	"swords.combat.defense": "Total Def",
+	"swords.combat.defensebonus": "Bonus Def",
+	"swords.combat.bulk": "Bulk",
+	"swords.combat.armorpenalty": "Penalty",
+	"swords.combat.armorname": "Type"
+}

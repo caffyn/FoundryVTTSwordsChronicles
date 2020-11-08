@@ -3,8 +3,9 @@
     "types": ["character"],
     "templates": {
       "base": {
-	"bonuses":{
-	  "stunt": 0
+	"config":{
+	  "usestunts": "yes",
+	  "stuntbonus": 0
 	},
         "health": {
           "value": 10,

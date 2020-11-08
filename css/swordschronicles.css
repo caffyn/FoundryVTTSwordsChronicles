@@ -9,6 +9,12 @@
   text-shadow: 0 0 10px red;
   cursor: pointer;
 }
+.box {
+  border: 1px solid black;
+  margin-right: 1px;
+  margin-left: 1px;
+  padding: 1px;
+}
 
 .grid,
 .grid-2col {
@@ -36,8 +42,8 @@
 }
 
 .grid-6col {
-  grid-column: span 5 / span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-column: span 6 / span 6;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 .grid-7col {
