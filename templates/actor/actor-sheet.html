@@ -266,6 +266,7 @@
             {{#each data.abilities as |ability key|}}
               <div class="ability flexrow flex-group-center">
 		<div>
+			<a class="resource-label ability rolldialog" >{{key}}</a>
 			<label for="data.abilities.{{key}}.value" class="resource-label ability rollable" data-rollability="yes" data-ability="{{key}}" title="data.abilities.{{key}}" >{{key}}</label>
 			<input type="text" name="data.abilities.{{key}}.value" value="{{ability.value}}" title="data.abilities.{{key}}.value" data-dtype="Number"/>
 		</div>

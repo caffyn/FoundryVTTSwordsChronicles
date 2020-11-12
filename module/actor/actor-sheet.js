@@ -132,6 +132,8 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     // Rollable abilities.
     html.find('.rollable').click(this._onRoll.bind(this));
     
+    //New roll dialog
+    html.find('.rolldialog').click(this._promptRoll.bind(this));
     //Attacks
     html.find('.attack').click(this._attack.bind(this));
     //Social Attacks
@@ -175,7 +177,6 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     return this.actor.createOwnedItem(itemData);
   }
 _handleStunt(flavor,total,keep,flatbonus=0,stuntbonus=0){
-	console.log("this is a stunt");
     let d = new Dialog({
 	    title: "Stunt",
 	    content: "Enter stunt level. Majestic is counted",
@@ -310,6 +311,27 @@ _performRoll(flavor,total,keep,flatbonus=0){
 	}else{
 		this._performRoll(flavor,total,keep,flatbonus);
 	}
+
+  }
+  //This is meant to produce a stunt/bonus dialog.
+ async _promptRoll(event){
+	event.preventDefault();
+	const element = event.currentTarget;
+	const dataset = element.dataset;
+	const data=this.actor.data.data;
+	let template = "systems/swordschronicles/templates/roll.html";
+	let params={"testkey": "testval"};
+	var html=await renderTemplate(template,params);
+	let d = new Dialog({
+		title: "Roll It!",
+		content: html,
+	  	buttons: {roll:{label:"Roll"}}
+	});
+	d.render(true);
+	
+
+	 
+
 
   }
 
