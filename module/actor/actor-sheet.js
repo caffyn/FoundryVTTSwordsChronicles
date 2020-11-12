@@ -130,14 +130,12 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     });
 
     // Rollable abilities.
-    html.find('.rollable').click(this._onRoll.bind(this));
+    html.find('.rollable').click(this._promptRoll.bind(this));
     
-    //New roll dialog
-    html.find('.rolldialog').click(this._promptRoll.bind(this));
     //Attacks
-    html.find('.attack').click(this._attack.bind(this));
+    //html.find('.attack').click(this._attack.bind(this));
     //Social Attacks
-    html.find('.socialattack').click(this._socialAttack.bind(this));
+    //html.find('.socialattack').click(this._socialAttack.bind(this));
 
     // Drag events for macros.
     if (this.actor.owner) {
@@ -176,216 +174,141 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     // Finally, create the item!
     return this.actor.createOwnedItem(itemData);
   }
-_handleStunt(flavor,total,keep,flatbonus=0,stuntbonus=0){
-    let d = new Dialog({
-	    title: "Stunt",
-	    content: "Enter stunt level. Majestic is counted",
-	    buttons: {
-		    zeroDot: {
-			label: "No Stunt",
-			callback: () => this._performRoll(flavor+", no stunt",total,keep,flatbonus)
-		    },
-			    oneDot: {
-			    label: "1 Dot",
-			callback: () => this._performRoll(flavor+", 1-Dot Stunt",total,keep,flatbonus+stuntbonus+1)
-		    },
-			    twoDot: {
-			    label: "2 Dot Flat",
-			callback: () => this._performRoll(flavor + ", 2-Dot Stunt",total,keep,flatbonus+stuntbonus+2)
-		    },
-			    die: {
-			    label: "2 Dot Die",
-			callback: () => this._performRoll(flavor+", 2-Dot Stunt",total+1,keep,flatbonus+stuntbonus)
-		    }
-	    },
-	    default: "zeroDot"
-    });
-    d.render(true);
-
-
-}
-
-_performRoll(flavor,total,keep,flatbonus=0){
-    let temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: flatbonus});
-    console.log('debug',temp);
-    temp.roll().toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: flavor
-      });
-}
-
-  _socialAttack(event) {
-	event.preventDefault();
-	const element = event.currentTarget;
-	const dataset = element.dataset;
-	const data=this.actor.data.data;
-	const ability=data.abilities[dataset.ability].value;
-	const special=data.abilities[dataset.ability].special[dataset.special];
-	const damage=data.abilities[dataset.damage].value;
-	const attacktype=dataset.flavor;
-	//TODO: Intimidate can be Act or Bluff when deceiving. 
-	
-	var total=ability;
-	var keep=total;
-	if (special > total){
-		total = total * 2;
-	}else{
-		total= total+special;
-	}
-	var flatbonus=0;
-
-	//Now, to handle injuries, wounds,fatigue, and frustration
-	flatbonus -= data.status.fatigue.value;
-	flatbonus -= data.status.injuries.value;
-	keep -= data.status.wounds.value;
-	keep -= data.status.frustrations.value;
-
-	var flavor="Attacks with "+ attacktype + " for " + damage + " influence";
-	if(data.config.usestunts == "yes"){
-		this._handleStunt(flavor,total,keep,0,data.config.stuntbonus);
-	}else{
-		this._performRoll(flavor,total,keep);
-	}
-
-  }
-
-  _attack(event) {
-	event.preventDefault();
-	const element = event.currentTarget;
-	const dataset = element.dataset;
-	const items=this.actor.data.items;
-	var id = dataset._id;
-	for(var i in items){
-		var temp=items[i];
-		if(temp._id == id){
-			var weapon=temp.data;
-			var name=temp.name;
-		}
-	}
-	//var weapon = this.actor.data.items[dataset.attindex].data;
-	const data=this.actor.data.data;
-	var flatbonus=0;
-	if(weapon.type == "melee"){
-		    var ability="fighting";
-	}else{
-		    var ability="marksmanship";
-	}
-	var bonus=0;
-	var special=weapon.special;
-	if(special != "none"){
-		bonus=data.abilities[ability].special[special];
-	}
-		  
-	var total=data.abilities[ability].value;
-	var keep=total;
-	//TODO: wound penalties, training, etc.
-	if(bonus>total){
-		total=total*2;
-	}else{
-		total= total+bonus;
-	}
-	if (weapon.damageability != "none"){
-		var damage=data.abilities[weapon.damageability].value;
-	}else{
-		var damage=0;
-	}
-	damage += weapon.damage;
-	if(weapon.quality==0){
-		//Peasant weapon. 1 die penalty
-	}else if(weapon.quality==2){
-		//Superior weapon. +1 flat
-		flatbonus+=1;
-	}else if(weapon.quality==3){
-		//Extraordinary weapon. +1 flat, +1 damage
-		damage+=1;
-		flatbonus+=1;
-	}
-	//Now, to handle injuries, wounds, and fatigue. 
-	flatbonus -= data.status.fatigue.value;
-	flatbonus -= data.status.injuries.value;
-	keep -= data.status.wounds.value;
-	
-	var flavor="Attacks with "+ name + " for " + damage + " damage";
-	if(data.config.usestunts == "yes"){
-		this._handleStunt(flavor,total,keep,flatbonus,data.config.stuntbonus);
-	}else{
-		this._performRoll(flavor,total,keep,flatbonus);
-	}
-
-  }
-  //This is meant to produce a stunt/bonus dialog.
  async _promptRoll(event){
 	event.preventDefault();
 	const element = event.currentTarget;
 	const dataset = element.dataset;
-	const data=this.actor.data.data;
+	var hasstunt;
+	if(this.actor.data.data.config.usestunts == "yes"){
+		hasstunt=true;
+	}else{
+		hasstunt=false;
+	}
+	const rolltype=dataset.category;
 	let template = "systems/swordschronicles/templates/roll.html";
-	let params={"testkey": "testval"};
+	let params={"stunts": hasstunt,"type": rolltype};
 	var html=await renderTemplate(template,params);
+	var title=dataset.flavor;
 	let d = new Dialog({
-		title: "Roll It!",
+		title: title,
 		content: html,
-	  	buttons: {roll:{label:"Roll"}}
+	  	buttons: {roll:{label:"Roll",
+			callback: html =>  this._performRoll(html,dataset)}}
 	});
 	d.render(true);
-	
-
-	 
-
 
   }
 
-  /**
-   * Handle clickable rolls.
-   * @param {Event} event   The originating click event
-   * @private
-   */
-  _onRoll(event) {
-    event.preventDefault();
-    const element = event.currentTarget;
-    const dataset = element.dataset;
-    if(dataset.rollability) {
-	    //Special code path for new rollables. Eventually going to be default
-	    const abilityName=dataset.ability;
-	    const data=this.actor.data.data;
+_performRoll(html,dataset){
+	const data=this.actor.data.data;
+    var test=html.find('[name="stunt"]');
+	var stunt="0";
+	for(let elem of test){
+		if(elem.checked){
+			stunt=elem.value;
+		}
+	}
+	var bonusflat=html.find('[name="bonusflat"]').val();
+	var bonusdice=html.find('[name="bonusdice"]').val();
+	var penaltyflat=html.find('[name="penaltyflat"]').val();
+	var penaltydice=html.find('[name="penaltydice"]').val();
+        var bonus=0;
+	if(dataset.category == "attack"){
+		const items=this.actor.data.items;
+		var id = dataset._id;
+		for(let temp of items){
+			if(temp._id == id){
+				var weapon=temp.data;
+				var name=temp.name;
+			}
+		}
+		//var weapon = this.actor.data.items[dataset.attindex].data;
+		if(weapon.type == "melee"){
+			    var abilityName="fighting";
+		}else{
+			    var abilityName="marksmanship";
+		}
+		var special=weapon.special;
+		if(special != "none"){
+			bonus=data.abilities[abilityName].special[special];
+		}
+	}else{
+    		var abilityName=dataset.ability;
+    		bonus=data.abilities[abilityName].special[dataset.specialization];
+	}
+    var total=parseInt(data.abilities[abilityName].value);
+    var keep=total;
+    if(bonus == null){
+	    bonus=0;
+    }
+    total+=parseInt(bonus);
+    total+=parseInt(bonusdice);
+    keep -= penaltydice;
+    if (total > (data.abilities[abilityName].value * 2)){
+	    total=data.abilities[abilityName].value*2;
+    }
 
-
-	    var score=data.abilities[abilityName].value;
-	    var bonus=0;
-	    var keep=score;
-	    bonus=data.abilities[abilityName].special[dataset.specialization];
-	    if(bonus == null){
-		    bonus=0;
-	    }
-	    
-	    if (bonus > score){
-		    score=score*2;
-	    }else {
-		    score=score+bonus
-	    }
+	//Now, to handle injuries, wounds,fatigue, and frustration
+	bonusflat -= data.status.fatigue.value;
+	bonusflat -= data.status.injuries.value;
+	keep -= data.status.wounds.value;
+	if(dataset.category == "ability"){
+		/**This is an ability roll(**/
 	    var flavor="Rolling "+abilityName+", specialization: ";
 	    if(dataset.specialization){
 		    flavor += dataset.specialization;
 	    }else {
 		    flavor += "None";
 	    }
-	if(this.actor.data.data.config.usestunts == "yes"){
-		this._handleStunt(flavor,score,keep,0,this.actor.data.data.config.stuntbonus);
-	}else{
-		this._performRoll(flavor,score,keep,0);
+	}else if(dataset.category == "socialattack"){
+		var flavor="Social Attack: ";
+		flavor+=dataset.flavor;
+		const damage=data.abilities[dataset.damage].value;
+		flavor += " for "+damage+" damage"; 
+		keep -= data.status.frustrations.value;
+	}else if(dataset.category == "attack"){
+
+			  
+		if (weapon.damageability != "none"){
+			var damage=data.abilities[weapon.damageability].value;
+		}else{
+			var damage=0;
+		}
+		damage += weapon.damage;
+		if(weapon.quality==0){
+			//Peasant weapon. 1 die penalty
+		}else if(weapon.quality==2){
+			//Superior weapon. +1 flat
+			bonusflat+=1;
+		}else if(weapon.quality==3){
+			//Extraordinary weapon. +1 flat, +1 damage
+			damage+=1;
+			bonusflat+=1;
+		}
+		
+		var flavor="Attacks with "+ name + " for " + damage + " damage";
+
 	}
+	if(this.actor.data.data.config.usestunts == "yes"){
+		if(stunt=="0"){
+			flavor += ", No Stunt";
+		}else if(stunt=="1"){
+			flavor += ", 1-Dot Stunt";
+			bonusflat+=1+data.config.stuntbonus;
+		}else if(stunt=="2"){
+			bonusflat+=2+data.config.stuntbonus;
+			flavor += ", 2-Dot Stunt";
+		}else if(stunt=="2b"){
+			bonusflat+=data.config.stuntbonus;
+			total+=1;
+			flavor += ", 2-Dot Stunt";
+	}		
 
-	    
-	    //TODO: add proper penalties
-
-    }else if (dataset.roll) {
-      let roll = new Roll(dataset.roll, this.actor.data.data);
-      let label = dataset.label ? `Rolling ${dataset.label}` : '';
-      roll.roll().toMessage({
+	}
+    let temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
+    temp.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: label
+        flavor: flavor
       });
-    }
-  }
-
+}
 }

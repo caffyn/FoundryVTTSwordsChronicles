@@ -6,13 +6,19 @@
 	<option value=1>1</option>
 	<option value=2>2</option>
 	<option value=3>3</option>
+	<option value=4>4</option>
+	<option value=5>5</option>
+	<option value=6>6</option>
       </select>
-      <label for="bousflat">Flat Bonus</label>
+      <label for="bonusflat">Flat Bonus</label>
       <select name="bonusflat" id="bonusflat">
 	<option value=0 selected>0</option>
 	<option value=1>1</option>
 	<option value=2>2</option>
 	<option value=3>3</option>
+	<option value=4>4</option>
+	<option value=5>5</option>
+	<option value=6>6</option>
       </select>
   </div>
   <div class="form-group">
@@ -22,6 +28,9 @@
 	<option value=1>1</option>
 	<option value=2>2</option>
 	<option value=3>3</option>
+	<option value=4>4</option>
+	<option value=5>5</option>
+	<option value=6>6</option>
       </select>
       <label for="penaltyflat">Flat Penalty</label>
       <select name="penaltyflat" id="penaltyflat">
@@ -29,8 +38,12 @@
 	<option value=1>1</option>
 	<option value=2>2</option>
 	<option value=3>3</option>
+	<option value=4>4</option>
+	<option value=5>5</option>
+	<option value=6>6</option>
       </select>
   </div>
+  {{#if stunts}}
   <div class="form-group">
 	  <div class="box">
 	  <input type="radio" id="0-dot" name="stunt" value="0" checked>
@@ -48,4 +61,5 @@
 	  
 	  
   </div>
+  {{/if}}
 </form>
