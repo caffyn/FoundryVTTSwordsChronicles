@@ -98,6 +98,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 
     // Assign and return
     actorData.gear = gear;
+    console.log("update output?",features);
     actorData.features = features;
     actorData.spells = spells;
     actorData.weapon = weapon;
@@ -132,10 +133,6 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     // Rollable abilities.
     html.find('.rollable').click(this._promptRoll.bind(this));
     
-    //Attacks
-    //html.find('.attack').click(this._attack.bind(this));
-    //Social Attacks
-    //html.find('.socialattack').click(this._socialAttack.bind(this));
 
     // Drag events for macros.
     if (this.actor.owner) {
@@ -147,6 +144,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
       });
     }
   }
+
 
   /**
    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
@@ -208,10 +206,10 @@ _performRoll(html,dataset){
 			stunt=elem.value;
 		}
 	}
-	var bonusflat=html.find('[name="bonusflat"]').val();
-	var bonusdice=html.find('[name="bonusdice"]').val();
-	var penaltyflat=html.find('[name="penaltyflat"]').val();
-	var penaltydice=html.find('[name="penaltydice"]').val();
+	var bonusflat=parseInt(html.find('[name="bonusflat"]').val());
+	var bonusdice=parseInt(html.find('[name="bonusdice"]').val());
+	var penaltyflat=parseInt(html.find('[name="penaltyflat"]').val());
+	var penaltydice=parseInt(html.find('[name="penaltydice"]').val());
         var bonus=0;
 	if(dataset.category == "attack"){
 		const items=this.actor.data.items;
@@ -230,11 +228,11 @@ _performRoll(html,dataset){
 		}
 		var special=weapon.special;
 		if(special != "none"){
-			bonus=data.abilities[abilityName].special[special];
+			bonus=parseInt(data.abilities[abilityName].special[special]);
 		}
 	}else{
     		var abilityName=dataset.ability;
-    		bonus=data.abilities[abilityName].special[dataset.specialization];
+    		bonus=parseInt(data.abilities[abilityName].special[dataset.specialization]);
 	}
     var total=parseInt(data.abilities[abilityName].value);
     var keep=total;
@@ -243,7 +241,7 @@ _performRoll(html,dataset){
     }
     total+=parseInt(bonus);
     total+=parseInt(bonusdice);
-    keep -= penaltydice;
+    keep -= parseInt(penaltydice);
     if (total > (data.abilities[abilityName].value * 2)){
 	    total=data.abilities[abilityName].value*2;
     }

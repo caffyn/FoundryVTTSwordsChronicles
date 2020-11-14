@@ -267,7 +267,125 @@
       "specialtypes": {"melee":["none","axes","bludgeons","brawling","fencing","longblades","polearms","shields","shortblades","spears"],"ranged":["none","bows","crossbows","siege","thrown","blackpowder"]}
     },
     "feature": {
-      "templates": ["base"]
+      "templates": ["base"],
+      "modifiers": {},
+"modtypes":{
+"agility": {
+  "acrobatics": 0,
+  "balance": 0,
+  "contortions": 0,
+  "dodge": 0,
+  "quickness": 0
+},
+"animalhandling": {
+  "charm": 0,
+  "drive": 0,
+  "ride": 0,
+  "train": 0
+},
+"athletics": {
+  "climb": 0,
+  "jump": 0,
+  "run": 0,
+  "strength": 0,
+  "swim": 0,
+  "throw": 0
+},
+"awareness": {
+  "empathy": 0,
+  "notice": 0
+},
+"cunning": {
+  "decipher": 0,
+  "logic": 0,
+  "memory": 0
+},
+"deception": {
+  "act": 0,
+  "bluff": 0,
+  "cheat": 0,
+  "disguise": 0
+},
+"endurance": {
+  "resilience": 0,
+  "stamina": 0
+},
+"fighting": {
+  "axes": 0,
+  "bludgeons": 0,
+  "brawling": 0,
+  "fencing": 0,
+  "longblades": 0,
+  "polearms": 0,
+  "shields": 0,
+  "shortblades": 0,
+  "spears": 0
+},
+"healing": {
+  "diagnose": 0,
+  "treatailment": 0,
+  "treatinjury": 0
+},
+"language": {
+  "custom1": 0,
+  "custom2": 0,
+  "custom3": 0,
+  "custom4": 0,
+  "custom5": 0
+},
+"knowledge": {
+  "education": 0,
+  "research": 0,
+  "streetwise": 0
+},
+"marksmanship": {
+  "bows": 0,
+  "crossbows": 0,
+  "siege": 0,
+  "thrown": 0,
+  "blackpowder": 0
+},
+"persuasion": {
+  "bargain": 0,
+  "charm": 0,
+  "convince": 0,
+  "incite": 0,
+  "intimidate": 0,
+  "seduce": 0,
+  "taunt": 0
+},
+"status": {
+  "breeding": 0,
+  "reputation": 0,
+  "stewardship": 0,
+  "tournaments": 0
+},
+"stealth": {
+  "blendin": 0,
+  "sneak": 0
+},
+"survival": {
+  "forage": 0,
+  "hunt": 0,
+  "orientation": 0,
+  "track": 0
+},
+"thievery": {
+  "picklock": 0,
+  "sleightofhand": 0,
+  "steal": 0
+},
+"warfare": {
+  "command": 0,
+  "strategy": 0,
+  "tactics": 0
+},
+"will": {
+  "courage": 0,
+  "coordinate": 0,
+  "dedication": 0
+}
+}
     },
     "spell": {
       "templates": ["base"],

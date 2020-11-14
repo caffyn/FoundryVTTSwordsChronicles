@@ -22,7 +22,47 @@
 
         {{!-- Attributes Tab --}}
         <div class="tab attributes" data-group="primary" data-tab="attributes">
-            {{!-- As you add new fields, add them in here! --}}
+	 <ol class="items-list">
+                <li class="item flexrow item-header" data-item-id="{{item._id}}">
+                  <div class="item-image"></div>
+                  <div class="item-name">Name</div>
+                  <div class="item-controls">
+			  <a class="modifier-create item" title="Create Modifier" data-type="modifier"><i class="fas fa-plus"></i> Add</a>
+                  </div>
+                </li>
+            {{#each data.modifiers as |mod index|}}
+	    <li class="item flexrow" data-item-id="{{../item._id}}" data-index="{{index}}" draggable="true">
+		    <input type="text" class="item-name" name="data.modifiers.{{index}}.name" value="{{mod.name}}" title="name"/>
+		    <select name="data.modifiers.{{index}}.type"> 
+			    <option value="flat"{{#if (eq mod.type "flat")}} selected{{/if}}>flat</option>
+			    <option value="die"{{#if (eq mod.type "die")}} selected{{/if}}>die</option>
+			    <option value="reroll"{{#if (eq mod.type "reroll")}} selected{{/if}}>reroll</option>
+		    </select>
+		    <select name="data.modifiers.{{index}}.targettype"> 
+			    <option value="ability"{{#if (eq mod.targettype "ability")}} selected{{/if}}>ability</option>
+			    <option value="special"{{#if (eq mod.targettype "special")}} selected{{/if}}>special</option>
+			    <option value="other"{{#if (eq mod.targettype "other")}} selected{{/if}}>reroll</option>
+		    </select>
+		    <select name="data.modifiers.{{index}}.target">
+			    {{#each ../data/modtypes  as |curtype val|}}
+			    <option value="{{val}}"{{#if (eq val mod.target)}}selected{{/if}}>{{val}}</option>
+		{{/each}}
+		    </select>
+		    <select name="data.modifiers.{{index}}.special">
+			    <option value="none"{{#if (eq curspecial "none")}}selected{{/if}}>All Rolls</option>
+			    {{#each (lookup ../data/modtypes mod.target) as |curval curspecial |}}
+
+			    <option value="{{curspecial}}"{{#if (eq curspecial mod.special)}}selected{{/if}}>{{curspecial}}</option>
+		{{/each}}
+		    </select>
+		    <input type="text" class="item-name" name="data.modifiers.{{index}}.effect" value="{{mod.effect}}" title="effect"/>
+                    <div class="item-controls">
+                        <a class="item-control modifier-remove" title="DeleteModifier"><i class="fas fa-trash"></i></a>
+                    </div>
+                </li>
+            {{/each}}
+            </ol>
+
         </div>
     </section>
 </form>

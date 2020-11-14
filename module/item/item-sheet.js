@@ -54,5 +54,42 @@ export class SwordschroniclesItemSheet extends ItemSheet {
     if (!this.options.editable) return;
 
     // Roll handlers, click handlers, etc. would go here.
+        // Add Modifier
+    html.find('.modifier-create').click(ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      this._addModifier(li);
+    });
+    html.find('.modifier-remove').click(ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      this._removeModifier(li);
+      //li.slideUp(200,() => this.render(false));
+    });
+
   }
+
+
+async _addModifier(li){
+	const itemId=li.data("itemId");
+	const item=this.actor.getOwnedItem(itemId);
+	var modifiers=item.data.data.modifiers;
+	var unused=0;
+	while(unused in modifiers){
+		unused+=1;
+	}
+	console.log("existing mods when adding",modifiers);
+	modifiers[unused]={name:"",effect: "",type: "flat",enabled:false,targettype:"ability",target: "agility","special":"none"};
+	item.update({"data.modifiers": modifiers},{});
+
+	}
+
+async _removeModifier(li){
+	const itemId=li.data("itemId");
+	const targetIndex=li.data("index");
+	var item=this.actor.getOwnedItem(itemId);
+	var modifiers=duplicate(item.data.data.modifiers);
+	delete modifiers[targetIndex];
+	item.update({"data.modifiers": modifiers},{recursive: false,noHook: true, diff: false});
+
+	}
+
 }
