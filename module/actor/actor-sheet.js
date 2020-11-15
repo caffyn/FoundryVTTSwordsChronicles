@@ -21,6 +21,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
   getData() {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
+    console.log("what now",data);
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
@@ -46,6 +47,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     // Initialize containers.
     const gear = [];
     const features = [];
+    const modifiers=[];
     const spells = {
       0: [],
       1: [],
@@ -72,6 +74,9 @@ export class SwordschroniclesActorSheet extends ActorSheet {
       // Append to features.
       else if (i.type === 'feature') {
         features.push(i);
+	for(let j in i.data.modifiers){
+		modifiers.push(i.data.modifiers[j]);
+	}
       }
       // Append to spells.
       else if (i.type === 'spell') {
@@ -98,8 +103,8 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 
     // Assign and return
     actorData.gear = gear;
-    console.log("update output?",features);
     actorData.features = features;
+    actorData.modifiers = modifiers;
     actorData.spells = spells;
     actorData.weapon = weapon;
   }
@@ -211,8 +216,10 @@ _performRoll(html,dataset){
 	var penaltyflat=parseInt(html.find('[name="penaltyflat"]').val());
 	var penaltydice=parseInt(html.find('[name="penaltydice"]').val());
         var bonus=0;
+	const items=this.actor.data.items;
+	var special="none";
+
 	if(dataset.category == "attack"){
-		const items=this.actor.data.items;
 		var id = dataset._id;
 		for(let temp of items){
 			if(temp._id == id){
@@ -226,53 +233,84 @@ _performRoll(html,dataset){
 		}else{
 			    var abilityName="marksmanship";
 		}
-		var special=weapon.special;
+		special=weapon.special;
 		if(special != "none"){
 			bonus=parseInt(data.abilities[abilityName].special[special]);
 		}
 	}else{
     		var abilityName=dataset.ability;
-    		bonus=parseInt(data.abilities[abilityName].special[dataset.specialization]);
+		special=dataset.specialization;
+
+		if(special != 'none' && special != null){
+    		bonus=parseInt(data.abilities[abilityName].special[special]);
+		}
 	}
     var total=parseInt(data.abilities[abilityName].value);
     var keep=total;
     if(bonus == null){
 	    bonus=0;
     }
+    if(special == null){
+	    special = 'none';
+    }
     total+=parseInt(bonus);
     total+=parseInt(bonusdice);
     keep -= parseInt(penaltydice);
-    if (total > (data.abilities[abilityName].value * 2)){
-	    total=data.abilities[abilityName].value*2;
-    }
 
-	//Now, to handle injuries, wounds,fatigue, and frustration
-	bonusflat -= data.status.fatigue.value;
-	bonusflat -= data.status.injuries.value;
-	keep -= data.status.wounds.value;
-	if(dataset.category == "ability"){
-		/**This is an ability roll(**/
-	    var flavor="Rolling "+abilityName+", specialization: ";
-	    if(dataset.specialization){
-		    flavor += dataset.specialization;
-	    }else {
-		    flavor += "None";
-	    }
-	}else if(dataset.category == "socialattack"){
-		var flavor="Social Attack: ";
-		flavor+=dataset.flavor;
-		const damage=data.abilities[dataset.damage].value;
-		flavor += " for "+damage+" damage"; 
-		keep -= data.status.frustrations.value;
-	}else if(dataset.category == "attack"){
 
-			  
-		if (weapon.damageability != "none"){
-			var damage=data.abilities[weapon.damageability].value;
-		}else{
-			var damage=0;
+	var rerolldice=0;
+
+	//Now, go through modifiers and apply as needed.
+	for(let currentitem of items){
+		if(currentitem.type == 'feature'){
+			for(let index in currentitem.data.modifiers){
+				var mod=currentitem.data.modifiers[index];
+				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special)){
+				//Listed bonus is relevant. Now to parse bonus 
+					var change=new Roll(mod.effect,data).roll().total;
+					if(mod.type=="flat"){
+						//This should be resolved as a flat bonus/penalty to the roll	
+						bonusflat+=change;
+					}else if(mod.type=="die"){
+						//This should grant bonus dice instead
+						total+=change;
+					}else if(mod.type=="reroll"){
+						//Reroll. 
+						rerolldice+=change;
+					}
+					}
+				}
+			}
+
 		}
-		damage += weapon.damage;
+		
+	    if (total > (data.abilities[abilityName].value * 2)){
+		    total=data.abilities[abilityName].value*2;
+	    }
+		//Now, to handle injuries, wounds,fatigue, and frustration
+		bonusflat -= data.status.fatigue.value;
+		bonusflat -= data.status.injuries.value;
+		keep -= data.status.wounds.value;
+		if(dataset.category == "ability"){
+			/**This is an ability roll(**/
+		    var flavor="Rolling "+abilityName+", specialization: ";
+			    flavor += special;
+		}else if(dataset.category == "socialattack"){
+			var flavor="Social Attack: ";
+			flavor+=dataset.flavor;
+			var damage=data.abilities[dataset.damage].value;
+			flavor += " for "+damage+" damage"; 
+			keep -= data.status.frustrations.value;
+		}else if(dataset.category == "attack"){
+
+				  
+			if (weapon.damageability != "none"){
+				var damage=data.abilities[weapon.damageability].value;
+			}else{
+				var damage=0;
+			}
+			console.log(weapon.damage,data);
+			damage+=new Roll(weapon.damage,data).roll().total;
 		if(weapon.quality==0){
 			//Peasant weapon. 1 die penalty
 		}else if(weapon.quality==2){
@@ -303,6 +341,7 @@ _performRoll(html,dataset){
 	}		
 
 	}
+	console.log("reroll dice",rerolldice);
     let temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
     temp.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),

@@ -70,25 +70,27 @@ export class SwordschroniclesItemSheet extends ItemSheet {
 
 async _addModifier(li){
 	const itemId=li.data("itemId");
-	const item=this.actor.getOwnedItem(itemId);
-	var modifiers=item.data.data.modifiers;
+	console.log("add test",this);
+	const item=this.object;
+	//const item=this.actor.getOwnedItem(itemId);
+	var data=item.data.data;
 	var unused=0;
-	while(unused in modifiers){
+	while(unused in data.modifiers){
 		unused+=1;
 	}
-	console.log("existing mods when adding",modifiers);
-	modifiers[unused]={name:"",effect: "",type: "flat",enabled:false,targettype:"ability",target: "agility","special":"none"};
-	item.update({"data.modifiers": modifiers},{});
+	data.modifiers[unused]={name:"",effect: "",type: "flat",enabled:false,targettype:"ability",target: "agility","special":"none"};
+	await this.object.update({"data": data},{recursive: false,noHook: true, diff: false});
 
 	}
 
 async _removeModifier(li){
 	const itemId=li.data("itemId");
 	const targetIndex=li.data("index");
-	var item=this.actor.getOwnedItem(itemId);
-	var modifiers=duplicate(item.data.data.modifiers);
-	delete modifiers[targetIndex];
-	item.update({"data.modifiers": modifiers},{recursive: false,noHook: true, diff: false});
+	var item=this.object;
+	var data_test=duplicate(item.data.data);
+	await delete data_test.modifiers[targetIndex];
+	await this.object.update({"data": data_test},{recursive: false,noHook: true, diff: false});
+
 
 	}
 

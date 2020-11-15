@@ -1,5 +1,4 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
-	{{log items}}
     {{!-- Sheet Header --}}
     <header class="sheet-header">
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
@@ -177,7 +176,6 @@
             <ol class="items-list">
                 <li class="item flexrow item-header">
 		<select name="data.config.usestunts" >
-			{{log data.config}}
 		<option value="yes" {{#if (eq data.config.usestunts "yes")}}selected {{/if}}>Enable Stunts</option>
 		<option value="no" {{#if (eq data.config.usestunts "no")}}selected {{/if}}>Disable Stunts</option>
 		</select>

@@ -1,4 +1,5 @@
 <form class="{{cssClass}}" autocomplete="off">
+	{{log this}}
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
         <div class="header-fields">
@@ -40,24 +41,34 @@
 		    </select>
 		    <select name="data.modifiers.{{index}}.targettype"> 
 			    <option value="ability"{{#if (eq mod.targettype "ability")}} selected{{/if}}>ability</option>
-			    <option value="special"{{#if (eq mod.targettype "special")}} selected{{/if}}>special</option>
-			    <option value="other"{{#if (eq mod.targettype "other")}} selected{{/if}}>reroll</option>
+			    <option value="attack"{{#if (eq mod.targettype "attack")}} selected{{/if}}>attack</option>
+			    <option value="damage"{{#if (eq mod.targettype "damage")}} selected{{/if}}>damage</option>
+			    <option value="other"{{#if (eq mod.targettype "other")}} selected{{/if}}>other</option>
 		    </select>
+		    {{#if (eq mod.targettype "other")}}
 		    <select name="data.modifiers.{{index}}.target">
-			    {{#each ../data/modtypes  as |curtype val|}}
+			    <option value="health"{{#if (eq "health" mod.target)}}selected{{/if}}>health</option>
+			    <option value="composure"{{#if (eq "composure" mod.target)}}selected{{/if}}>composure</option>
+			    <option value="initiative"{{#if (eq "initiative" mod.target)}}selected{{/if}}>initiative</option>
+			    <option value="socialintiative"{{#if (eq "socialinitiative" mod.target)}}selected{{/if}}>social initiative</option>
+		    </select>
+		    {{else}}
+		    <select name="data.modifiers.{{index}}.target">
+			    {{#each ../data/modtypes/ability  as |curtype val|}}
 			    <option value="{{val}}"{{#if (eq val mod.target)}}selected{{/if}}>{{val}}</option>
 		{{/each}}
 		    </select>
 		    <select name="data.modifiers.{{index}}.special">
 			    <option value="none"{{#if (eq curspecial "none")}}selected{{/if}}>All Rolls</option>
-			    {{#each (lookup ../data/modtypes mod.target) as |curval curspecial |}}
+			    {{#each (lookup ../data/modtypes/ability mod.target) as |curval curspecial |}}
 
-			    <option value="{{curspecial}}"{{#if (eq curspecial mod.special)}}selected{{/if}}>{{curspecial}}</option>
+			    <option value="{{curval}}"{{#if (eq curval mod.special)}}selected{{/if}}>{{curval}}</option>
 		{{/each}}
 		    </select>
+		    {{/if}}
 		    <input type="text" class="item-name" name="data.modifiers.{{index}}.effect" value="{{mod.effect}}" title="effect"/>
                     <div class="item-controls">
-                        <a class="item-control modifier-remove" title="DeleteModifier"><i class="fas fa-trash"></i></a>
+                        <a class="modifier-remove" title="DeleteModifier"><i class="fas fa-trash"></i></a>
                     </div>
                 </li>
             {{/each}}
