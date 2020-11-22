@@ -1,5 +1,4 @@
 <form class="{{cssClass}}" autocomplete="off">
-	{{log this}}
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
         <div class="header-fields">
@@ -39,18 +38,18 @@
 			    <option value="die"{{#if (eq mod.type "die")}} selected{{/if}}>die</option>
 			    <option value="reroll"{{#if (eq mod.type "reroll")}} selected{{/if}}>reroll</option>
 		    </select>
-		    <select name="data.modifiers.{{index}}.targettype"> 
-			    <option value="ability"{{#if (eq mod.targettype "ability")}} selected{{/if}}>ability</option>
-			    <option value="attack"{{#if (eq mod.targettype "attack")}} selected{{/if}}>attack</option>
-			    <option value="damage"{{#if (eq mod.targettype "damage")}} selected{{/if}}>damage</option>
-			    <option value="other"{{#if (eq mod.targettype "other")}} selected{{/if}}>other</option>
+		    <select name="data.modifiers.{{index}}.effecttype" value={{mod.effecttype}}>
+			    <option value="ability"{{#if (eq mod.effecttype "ability")}} selected{{/if}}>ability</option>
+			    <option value="attack"{{#if (eq mod.effecttype "attack")}} selected{{/if}}>attack</option>
+			    <option value="damage"{{#if (eq mod.effecttype "damage")}} selected{{/if}}>damage</option>
+			    <option value="other"{{#if (eq mod.effecttype "other")}} selected{{/if}}>other</option>
 		    </select>
-		    {{#if (eq mod.targettype "other")}}
+		    {{#if (eq mod.effecttype "other")}}
 		    <select name="data.modifiers.{{index}}.target">
 			    <option value="health"{{#if (eq "health" mod.target)}}selected{{/if}}>health</option>
 			    <option value="composure"{{#if (eq "composure" mod.target)}}selected{{/if}}>composure</option>
 			    <option value="initiative"{{#if (eq "initiative" mod.target)}}selected{{/if}}>initiative</option>
-			    <option value="socialintiative"{{#if (eq "socialinitiative" mod.target)}}selected{{/if}}>social initiative</option>
+			    <option value="socialinitiative"{{#if (eq "socialinitiative" mod.target)}}selected{{/if}}>social initiative</option>
 		    </select>
 		    {{else}}
 		    <select name="data.modifiers.{{index}}.target">

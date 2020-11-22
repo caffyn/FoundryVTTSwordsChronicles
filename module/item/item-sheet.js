@@ -78,7 +78,7 @@ async _addModifier(li){
 	while(unused in data.modifiers){
 		unused+=1;
 	}
-	data.modifiers[unused]={name:"",effect: "",type: "flat",enabled:false,targettype:"ability",target: "agility","special":"none"};
+	data.modifiers[unused]={name:"",effect: "",type: "flat",enabled:false,effecttype:"ability",target: "agility","special":"none"};
 	await this.object.update({"data": data},{recursive: false,noHook: true, diff: false});
 
 	}

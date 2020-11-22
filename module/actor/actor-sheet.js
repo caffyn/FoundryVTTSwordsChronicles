@@ -61,6 +61,10 @@ export class SwordschroniclesActorSheet extends ActorSheet {
       9: []
     };
     const weapon=[];
+	 //Initial health and composure calcs
+
+    actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
+    actorData.data.composure.max=(actorData.data.abilities.will.value * 3);
 
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
@@ -74,8 +78,40 @@ export class SwordschroniclesActorSheet extends ActorSheet {
       // Append to features.
       else if (i.type === 'feature') {
         features.push(i);
+	console.log("item found",i);
 	for(let j in i.data.modifiers){
-		modifiers.push(i.data.modifiers[j]);
+		let currentmod=i.data.modifiers[j];
+		//Dropdown switch can lead to invalid conditions. Fixing here, this is probably a temp fix
+		if(currentmod.effecttype=="other" &&  !(currentmod.target in {'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
+			console.log("debug: fixing invalid typing",currentmod);
+			i.data.modifiers[j].target='health';
+			currentmod=i.data.modifiers[j];
+		}else if(currentmod.effecttype!="other" &&  (currentmod.target in {'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
+			console.log("debug: fixing invalid typing",currentmod);
+			i.data.modifiers[j].target='agility';
+			currentmod=i.data.modifiers[j];
+		}
+		modifiers.push(currentmod);
+		//Now, to apply health and composure bonuses
+		if(currentmod.effecttype=="other" && currentmod.target=='health'){
+			//Compute and add health bonus
+			try{
+			var change=new Roll(currentmod.effect,actorData.data).roll().total;
+			actorData.data.health.max+=change;
+			}catch(error){
+				console.log("formula error",currentmod.effect,actorData);
+			}
+		}
+		if(currentmod.effecttype=="other" && currentmod.target=='composure'){
+			//Compute and add composure bonus
+			try{
+			var change=new Roll(currentmod.effect,actorData.data).roll().total;
+			actorData.data.composure.max+=change;
+			}catch(error){
+				console.log("formula error",currentmod.effect,actorData);
+			}
+		}
+
 	}
       }
       // Append to spells.
@@ -88,13 +124,13 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	weapon.push(i);
       }
     }
-    //Health and composure calcs
 
-    actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
+
+    //Health and composure final calcs
+
     if(actorData.data.health.value > actorData.data.health.max){
 	   actorData.data.health.value=actorData.data.health.max; 
     }
-    actorData.data.composure.max=(actorData.data.abilities.will.value * 3);
     if(actorData.data.composure.value > actorData.data.composure.max){
 	   actorData.data.composure.value=actorData.data.composure.max; 
     }
@@ -241,6 +277,7 @@ _performRoll(html,dataset){
     		var abilityName=dataset.ability;
 		special=dataset.specialization;
 
+
 		if(special != 'none' && special != null){
     		bonus=parseInt(data.abilities[abilityName].special[special]);
 		}
@@ -254,11 +291,11 @@ _performRoll(html,dataset){
 	    special = 'none';
     }
     total+=parseInt(bonus);
-    total+=parseInt(bonusdice);
     keep -= parseInt(penaltydice);
 
 
 	var rerolldice=0;
+	var reroll=false;
 
 	//Now, go through modifiers and apply as needed.
 	for(let currentitem of items){
@@ -267,7 +304,13 @@ _performRoll(html,dataset){
 				var mod=currentitem.data.modifiers[index];
 				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special)){
 				//Listed bonus is relevant. Now to parse bonus 
-					var change=new Roll(mod.effect,data).roll().total;
+					var change=0;
+					try{
+						change=new Roll(mod.effect,data).roll().total;
+					}catch(error){
+						console.log("bonus parse failure",error);
+						change=0;
+					}
 					if(mod.type=="flat"){
 						//This should be resolved as a flat bonus/penalty to the roll	
 						bonusflat+=change;
@@ -277,6 +320,7 @@ _performRoll(html,dataset){
 					}else if(mod.type=="reroll"){
 						//Reroll. 
 						rerolldice+=change;
+						reroll=true;
 					}
 					}
 				}
@@ -287,6 +331,8 @@ _performRoll(html,dataset){
 	    if (total > (data.abilities[abilityName].value * 2)){
 		    total=data.abilities[abilityName].value*2;
 	    }
+    //Bonus dice from interface can override normal limits
+	total+=parseInt(bonusdice);
 		//Now, to handle injuries, wounds,fatigue, and frustration
 		bonusflat -= data.status.fatigue.value;
 		bonusflat -= data.status.injuries.value;
@@ -294,6 +340,10 @@ _performRoll(html,dataset){
 		if(dataset.category == "ability"){
 			/**This is an ability roll(**/
 		    var flavor="Rolling "+abilityName+", specialization: ";
+	//Check for armor bulk. Applies penalty to Agility tests
+	if(abilityName == 'agility'){
+		penaltyflat+=data.combat.armorpenalty;
+	}
 			    flavor += special;
 		}else if(dataset.category == "socialattack"){
 			var flavor="Social Attack: ";
@@ -325,6 +375,7 @@ _performRoll(html,dataset){
 		var flavor="Attacks with "+ name + " for " + damage + " damage";
 
 	}
+
 	if(this.actor.data.data.config.usestunts == "yes"){
 		if(stunt=="0"){
 			flavor += ", No Stunt";
@@ -342,7 +393,16 @@ _performRoll(html,dataset){
 
 	}
 	console.log("reroll dice",rerolldice);
-    let temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
+	var temp;
+	bonusflat-=penaltyflat;
+
+	if(reroll && rerolldice == 0){
+    temp= new Roll("(@total)d6kh(@keep)r1+@flat",{total: total, keep: keep,flat: bonusflat});
+	}else if(reroll){
+	temp= new Roll("(@total)d6kh(@keep)r(@limit)=1+@flat",{total: total, keep: keep,limit: rerolldice, flat: bonusflat});
+	}else{
+    temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
+	}
     temp.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor: flavor
