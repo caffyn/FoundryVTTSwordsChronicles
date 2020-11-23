@@ -4,5 +4,6 @@
 	"swords.combat.defensebonus": "Bonus Def",
 	"swords.combat.bulk": "Bulk",
 	"swords.combat.armorpenalty": "Penalty",
+	"swords.combat.formationbonus": "Other Def",
 	"swords.combat.armorname": "Type"
 }

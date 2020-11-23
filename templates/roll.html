@@ -43,6 +43,14 @@
 	<option value=6>6</option>
       </select>
   </div>
+  {{#if (eq chartype "unit")}}{{#if (eq type "attack")}}
+  <label for="strategem">Strategem Used</label>
+  <select name="strategem" id="strategem">
+	  <option value="attack" selected>Attack</option>
+	  <option value="charge">Charge</option>
+  </select>
+
+	  {{/if}}{{/if}}
   {{#if stunts}}
   <div class="form-group">
 	  <div class="box">

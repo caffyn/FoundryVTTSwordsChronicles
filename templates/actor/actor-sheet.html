@@ -19,6 +19,19 @@
                     <input type="text" name="data.health.max" value="{{data.health.max}}" data-dtype="Number"/>
                   </div>
               </div>
+	      {{#if data.formation}}
+
+              <div class="resource flex-group-center">
+			<label for="data.formation.selected" class="resource-label" title="data.formation.selected">Formation</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+			<select name="data.formation.selected" id="data.formation.selected">
+				{{#each data.formation.available as |formdetails formname| }}
+			<option value="{{formname}}"{{#if (eq formname ../data/formation/selected)}}selected{{/if}}>{{formname}}</option>
+			{{/each}}
+			</select>
+		  </div>
+		</div>
+	      {{else}}
               <div class="resource flex-group-center">
                   <label for="data.composure.value" class="resource-label">Composure</label>
                   <div class="resource-content flexrow flex-center flex-between">
@@ -27,6 +40,8 @@
                     <input type="text" name="data.composure.max" value="{{data.composure.max}}" data-dtype="Number"/>
                   </div>
               </div>
+	      {{/if}}
+	    {{#unless data.formation}}
           </div>
             <div class="resources grid grid-4col">
 		    {{#each data.status as |statusval statusname|}}
@@ -39,6 +54,7 @@
               </div>
 		    {{/each}}
 	</div>
+	{{/unless}}
 
           {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
           use both the "grid" and "grid-Ncol" class where "N" can be any number
@@ -136,6 +152,8 @@
         {{!-- Combat Tab --}}
         <div class="tab items" data-group="primary" data-tab="weapon">
             <div class="resources grid grid-6col">
+		    {{log "html debug"}}
+		    {{log data}}
 		    {{#each data.combat as |statusval statusname|}}
 
               <div class="resource flex-group-center">
@@ -145,8 +163,16 @@
                   </div>
               </div>
 		    {{/each}}
+		    {{#if data.formation}}
+
+		    {{/if}}
 		
 		 </div>
+		    {{#if data.formation}}
+		    <div class="resource flex-group-center">
+			    {{lookup data.formation.available data.formation.selected}}
+		    </div>
+		    {{/if}}
             <ol class="items-list">
                 <li class="item flexrow item-header">
                   <div class="item-image"></div>

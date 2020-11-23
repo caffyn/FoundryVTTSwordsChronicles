@@ -1,23 +1,183 @@
 {
   "Actor": {
-    "types": ["character"],
+    "types": ["character","unit"],
     "templates": {
-      "base": {
+      "person":{
+      "abilities": {
+        "agility": {
+	  "special": {
+		  "acrobatics": 0,
+		  "balance": 0,
+		  "contortions": 0,
+		  "dodge": 0,
+		  "quickness": 0
+	  }
+
+        },
+        "animalhandling": {
+	  "special": {
+		  "charm": 0,
+		  "drive": 0,
+		  "ride": 0,
+		  "train": 0
+	  }
+        },
+        "athletics": {
+	  "special": {
+		  "climb": 0,
+		  "jump": 0,
+		  "run": 0,
+		  "strength": 0,
+		  "swim": 0,
+		  "throw": 0
+	  }
+        },
+        "awareness": {
+	  "special": {
+		  "empathy": 0,
+		  "notice": 0
+	  }
+        },
+        "cunning": {
+	  "special": {
+		  "decipher": 0,
+		  "logic": 0,
+		  "memory": 0
+	  }
+        },
+        "deception": {
+	  "special": {
+		  "act": 0,
+		  "bluff": 0,
+		  "cheat": 0,
+		  "disguise": 0
+	  }
+        },
+        "endurance": {
+	  "special": {
+		  "resilience": 0,
+		  "stamina": 0
+	  }
+        },
+        "fighting": {
+	  "special": {
+		  "axes": 0,
+		  "bludgeons": 0,
+		  "brawling": 0,
+		  "fencing": 0,
+		  "longblades": 0,
+		  "polearms": 0,
+		  "shields": 0,
+		  "shortblades": 0,
+		  "spears": 0
+	  }
+        },
+        "healing": {
+	  "special": {
+		  "diagnose": 0,
+		  "treatailment": 0,
+		  "treatinjury": 0
+	  }
+        },
+        "language": {
+	  "special": {
+		  "custom1": 0,
+		  "custom2": 0,
+		  "custom3": 0,
+		  "custom4": 0,
+		  "custom5": 0
+	  }
+        },
+        "knowledge": {
+	  "special": {
+		  "education": 0,
+		  "research": 0,
+		  "streetwise": 0
+	  }
+        },
+        "marksmanship": {
+	  "special": {
+		  "bows": 0,
+		  "crossbows": 0,
+		  "siege": 0,
+		  "thrown": 0,
+		  "blackpowder": 0
+	  }
+        },
+        "persuasion": {
+	  "special": {
+		  "bargain": 0,
+		  "charm": 0,
+		  "convince": 0,
+		  "incite": 0,
+		  "intimidate": 0,
+		  "seduce": 0,
+		  "taunt": 0
+	  }
+        },
+        "status": {
+	  "special": {
+		  "breeding": 0,
+		  "reputation": 0,
+		  "stewardship": 0,
+		  "tournaments": 0
+	  }
+        },
+        "stealth": {
+	  "special": {
+		  "blendin": 0,
+		  "sneak": 0
+	  }
+        },
+        "survival": {
+	  "special": {
+		  "forage": 0,
+		  "hunt": 0,
+		  "orientation": 0,
+		  "track": 0
+	  }
+        },
+        "thievery": {
+	  "special": {
+		  "picklock": 0,
+		  "sleightofhand": 0,
+		  "steal": 0
+	  }
+        },
+        "warfare": {
+	  "special": {
+		  "command": 0,
+		  "strategy": 0,
+		  "tactics": 0
+	  }
+        },
+        "will": {
+	  "special": {
+		  "courage": 0,
+		  "coordinate": 0,
+		  "dedication": 0
+	  }
+        }
+      },
 	"config":{
 	  "usestunts": "yes",
 	  "stuntbonus": 0
 	},
-        "health": {
-          "value": 10,
-          "min": 0,
-          "max": 10
-        },
+	"combat": {
+	  "bulk": 0,
+	  "armorpenalty": 0,
+	  "armorname": ""
+	},
+	"destiny":{
+	  "total": 1,
+	  "invested": 0,
+	  "bonus": 0
+	},
         "composure": {
           "value": 10,
           "min": 0,
           "max": 10
-        },
-	"status":{
+        },"status": {
         "wounds": {
           "value": 0,
           "min": 0,
@@ -38,14 +198,55 @@
           "min": 0,
           "max": 3
         }
+	}
+      },
+      "group":{
+	"discipline": 0,
+	"status": {
+	  "state": "normal"
+	},
+	"formation":{
+		"selected": "battle",
+		"available":{
+			"battle": "No Stat Change",
+			"checkered": "+5 Defense vs. Marksmanship,+1D on Fighting tests vs. mobs, +3 to Discipline, slow movement", 
+			"column": "-1D on Fighting tests",
+			"mob": "-5 Defense, +6 Discipline",
+			"phalanx": "+5 Defense vs. Fighting, -5 Defense vs. Marksmanship, very slow movement",
+			"shieldwall": "+5 Defense vs. Fighting, negates charges, no movement",
+			"square": "Negate flank and rear attack bonuses, no movement",
+			"tortoise": "+5 Defense (applied), no attacks, very slow movement",
+			"wedge": "+1D on Fighting tests for charging, -5 vs. Marksmanship"
+		}
+	},
+	"config":{
+	  "usestunts": "no",
+	  "stuntbonus": 0
+	},"combat":{
+	  "formationbonus": 0
+	}
+      },
+      "base": {
+	  "glory": {
+	    "spent": 0,
+	    "total": 0
+	  },
+	  "xp": {
+	    "chargen": 0,
+	    "earned": 0,
+	    "spent": 0
+	  },
+        "health": {
+          "value": 10,
+          "min": 0,
+          "max": 10
+        },
+	"status":{
 	},
 	"combat": {
 	  "armor": 0,
 	  "defense": 0,
-	  "defensebonus": 0,
-	  "bulk": 0,
-	  "armorpenalty": 0,
-	  "armorname": ""
+	  "defensebonus": 0
 	},
 	"socialcombat": {
 	  "defense": 0,
@@ -56,184 +257,76 @@
 	  
       "abilities": {
         "agility": {
-          "value": 2,
-	  "special": {
-		  "acrobatics": 0,
-		  "balance": 0,
-		  "contortions": 0,
-		  "dodge": 0,
-		  "quickness": 0
-	  }
-
+          "value": 2
         },
         "animalhandling": {
-          "value": 2,
-	  "special": {
-		  "charm": 0,
-		  "drive": 0,
-		  "ride": 0,
-		  "train": 0
-	  }
+          "value": 2
         },
         "athletics": {
-          "value": 2,
-	  "special": {
-		  "climb": 0,
-		  "jump": 0,
-		  "run": 0,
-		  "strength": 0,
-		  "swim": 0,
-		  "throw": 0
-	  }
+          "value": 2
         },
         "awareness": {
-          "value": 2,
-	  "special": {
-		  "empathy": 0,
-		  "notice": 0
-	  }
+          "value": 2
         },
         "cunning": {
-          "value": 2,
-	  "special": {
-		  "decipher": 0,
-		  "logic": 0,
-		  "memory": 0
-	  }
+          "value": 2
         },
         "deception": {
-          "value": 2,
-	  "special": {
-		  "act": 0,
-		  "bluff": 0,
-		  "cheat": 0,
-		  "disguise": 0
-	  }
+          "value": 2
         },
         "endurance": {
-          "value": 2,
-	  "special": {
-		  "resilience": 0,
-		  "stamina": 0
-	  }
+          "value": 2
         },
         "fighting": {
-          "value": 2,
-	  "special": {
-		  "axes": 0,
-		  "bludgeons": 0,
-		  "brawling": 0,
-		  "fencing": 0,
-		  "longblades": 0,
-		  "polearms": 0,
-		  "shields": 0,
-		  "shortblades": 0,
-		  "spears": 0
-	  }
+          "value": 2
         },
         "healing": {
-          "value": 2,
-	  "special": {
-		  "diagnose": 0,
-		  "treatailment": 0,
-		  "treatinjury": 0
-	  }
+          "value": 2
         },
         "language": {
-          "value": 2,
-	  "special": {
-		  "custom1": 0,
-		  "custom2": 0,
-		  "custom3": 0,
-		  "custom4": 0,
-		  "custom5": 0
-	  }
+          "value": 2
         },
         "knowledge": {
-          "value": 2,
-	  "special": {
-		  "education": 0,
-		  "research": 0,
-		  "streetwise": 0
-	  }
+          "value": 2
         },
         "marksmanship": {
-          "value": 2,
-	  "special": {
-		  "bows": 0,
-		  "crossbows": 0,
-		  "siege": 0,
-		  "thrown": 0,
-		  "blackpowder": 0
-	  }
+          "value": 2
         },
         "persuasion": {
-          "value": 2,
-	  "special": {
-		  "bargain": 0,
-		  "charm": 0,
-		  "convince": 0,
-		  "incite": 0,
-		  "intimidate": 0,
-		  "seduce": 0,
-		  "taunt": 0
-	  }
+          "value": 2
         },
         "status": {
-          "value": 2,
-	  "special": {
-		  "breeding": 0,
-		  "reputation": 0,
-		  "stewardship": 0,
-		  "tournaments": 0
-	  }
+          "value": 2
         },
         "stealth": {
-          "value": 2,
-	  "special": {
-		  "blendin": 0,
-		  "sneak": 0
-	  }
+          "value": 2
         },
         "survival": {
-          "value": 2,
-	  "special": {
-		  "forage": 0,
-		  "hunt": 0,
-		  "orientation": 0,
-		  "track": 0
-	  }
+          "value": 2
         },
         "thievery": {
-          "value": 2,
-	  "special": {
-		  "picklock": 0,
-		  "sleightofhand": 0,
-		  "steal": 0
-	  }
+          "value": 2
         },
         "warfare": {
-          "value": 2,
-	  "special": {
-		  "command": 0,
-		  "strategy": 0,
-		  "tactics": 0
-	  }
+          "value": 2
         },
         "will": {
-          "value": 2,
-	  "special": {
-		  "courage": 0,
-		  "coordinate": 0,
-		  "dedication": 0
-	  }
+          "value": 2
         }
       }
 
       }
     },
     "character": {
-      "templates": ["base"],
+      "templates": ["base","person"],
+      "biography": "",
+      "attributes": {
+        "level": {
+          "value": 1
+        }
+      }    },
+    "unit": {
+      "templates": ["base","group"],
       "biography": "",
       "attributes": {
         "level": {
