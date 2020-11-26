@@ -317,6 +317,12 @@
 			<label for="data.abilities.{{key}}.chargen_increase" >Increased at Chargen</label>
 			<input type="checkbox" name="data.abilities.{{key}}.chargen_increase" value=true {{#if ability.chargen_increase}} checked {{/if}}/>
 			{{/unless}}
+			{{#if ability.customname}}
+			<label for="data.abilities.{{key}}.customname">Language</label>
+			<input type="text" name="data.abilities.{{key}}.customname" value={{ability.customname}}>
+                    <a class="language-create" title="Create Language"><i class="fas fa-plus"></i> Add Language</a>
+
+			{{/if}}
 		</div>
 		<div>
 		{{#each ability.special as |specialval special|}}

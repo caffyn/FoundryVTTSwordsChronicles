@@ -76,23 +76,28 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	  //Set passive values for stats,start totalling XP costs
 	  //Also doing XP calculations for abilities
 	  console.log(actorData.data.abilities);
+	  var costoffset=2;
 	  for(let i in actorData.data.abilities){
-		  console.log('test',i,actorData.data.abilities[i]);
 		  actorData.data.abilities[i].passive=actorData.data.abilities[i].value*4;
 		  //Special handling for language
-		  if(i=='language'){
-		console.log("language detected");		  
-		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value == 1){
+		  if(i.includes('language') && i != "language1"){
+			//Languages have special handling
+			//First language follows normal rules, further ones don't get the 2 "free" ranks
+			costoffset=0;
+		  }else{
+			  costoffset=2;
+		  }
+		  if(!(i.includes('language')) && actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value == 1){
 			  //Value of 1 at chargen is worth 50 free XP
 			spentxp -= 50;
 			  console.log("xp incremental decrease",spentxp);
-		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value > 2){
+		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value > costoffset){
 			  //First increase costs 10 at chargen
-			  spentxp += (actorData.data.abilities[i].value-2)*30 - 20;
+			  spentxp += (actorData.data.abilities[i].value-costoffset)*30 - 20;
 			  console.log("xp incremental",spentxp);
-		  }else if(actorData.data.abilities[i].value > 2){
+		  }else if(actorData.data.abilities[i].value > costoffset){
 			  //Post chargen increases, all costs are 30/level
-			  spentxp += (actorData.data.abilities[i].value-2)*30;
+			  spentxp += (actorData.data.abilities[i].value-costoffset)*30;
 			  console.log("xp incremental",spentxp);
 		  }
 		  for(let special in actorData.data.abilities[i].special){
@@ -219,7 +224,7 @@ if(actorData.type == 'unit'){
 		actorData.data.combat.rangeddefense-=5;
 		actorData.data.combat.meleedefense+=5;
 	}else if(actorData.data.formation.selected == 'shieldwall'){
-		actordata.data.combat.meleedefense+=5;
+		actorData.data.combat.meleedefense+=5;
 	}else if(actorData.data.formation.selected == 'wedge'){
 		actorData.data.combat.rangeddefense-=5;
 	}else if(actorData.data.formation.selected == 'mob'){
@@ -250,6 +255,9 @@ if(actorData.type == 'unit'){
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
+
+    // Add Language
+    html.find('.language-create').click(this._onLanguageCreate.bind(this));
 
     // Add Inventory Item
     html.find('.item-create').click(this._onItemCreate.bind(this));
@@ -309,6 +317,39 @@ if(actorData.type == 'unit'){
 
     // Finally, create the item!
     return this.actor.createOwnedItem(itemData);
+  }
+  async _onLanguageCreate(event) {
+    event.preventDefault();
+    var nextindex=1;
+    var name="language"+nextindex;
+    console.log('lang',this.actor.data);
+    while(name in this.actor.data.data.abilities){
+	nextindex+=1;
+	name="language"+nextindex;
+
+    }
+    console.log("Creating new language",name);
+    var currentData=duplicate(this.actor.data.data.abilities);
+    var newData={};
+    var unitType=this.actor.data.type;
+    var insertAfter="language"+(nextindex-1);
+    for(var ability in currentData){
+	    newData[ability]=currentData[ability];
+	    if(ability==insertAfter){
+		    if(unitType == 'character'){
+		    newData[name]={"customname":"default","passive":8,"chargen_increase":false,"value":2,"special":{"eloquence": 0,"literacy": 0}};
+		    }else{
+
+		    newData[name]={"customname":"default","passive":8,"chargen_increase":false,"value":2};
+		    }
+	    }
+    }
+    console.log('rewrote',newData);
+    var updated=this.actor.data.data;
+    updated.abilities=newData;
+    await this.object.update({"data":updated},{recursive: false,noHook: true,diff: false});
+    
+    
   }
  async _promptRoll(event){
 	event.preventDefault();

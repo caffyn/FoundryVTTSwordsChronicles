@@ -79,7 +79,7 @@
 		  "treatinjury": 0
 	  }
         },
-        "language": {
+        "language1": {
 	  "special": {
 		  "eloquence": 0,
 		  "literacy": 0
@@ -301,7 +301,8 @@
 	"chargen_increase": false,
           "value": 2
         },
-        "language": {
+        "language1": {
+	"customname": "default",
 	"passive": 8,
 	"chargen_increase": false,
           "value": 2
@@ -411,7 +412,7 @@
 	"endurance": ["resilience","stamina"],
 	"fighting": ["axes","bludgeons","brawling","fencing","longblades","polearms","shields","shortblades","spears"],
 	"healing": ["diagnose","treatailment","treatinjury"],
-	"language": ["custom1","custom2","custom3","custom4","custom5"],
+	"language": ["eloquence","literacy"],
 	"knowledge": ["education","research","streetwise"],
 	"marksmanship": ["bows","crossbows","siege","thrown","blackpowder"],
 	"persuasion": ["bargain","charm","convince","incite","intimidate","seduce","taunt"],
