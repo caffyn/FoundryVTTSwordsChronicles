@@ -81,11 +81,8 @@
         },
         "language": {
 	  "special": {
-		  "custom1": 0,
-		  "custom2": 0,
-		  "custom3": 0,
-		  "custom4": 0,
-		  "custom5": 0
+		  "eloquence": 0,
+		  "literacy": 0
 	  }
         },
         "knowledge": {
@@ -164,12 +161,12 @@
 	  "stuntbonus": 0
 	},
 	"combat": {
-	  "bulk": 0,
 	  "armorpenalty": 0,
 	  "armorname": ""
 	},
 	"destiny":{
 	  "total": 1,
+	    "base": 0,
 	  "invested": 0,
 	  "bonus": 0
 	},
@@ -201,7 +198,6 @@
 	}
       },
       "group":{
-	"discipline": 0,
 	"status": {
 	  "state": "normal"
 	},
@@ -223,7 +219,10 @@
 	  "usestunts": "no",
 	  "stuntbonus": 0
 	},"combat":{
-	  "formationbonus": 0
+	  "discipline": 0,
+	  "rangeddefense": 0,
+	  "meleedefense": 0,
+	  "basediscipline": 0
 	}
       },
       "base": {
@@ -244,6 +243,7 @@
 	"status":{
 	},
 	"combat": {
+	  "bulk": 0,
 	  "armor": 0,
 	  "defense": 0,
 	  "defensebonus": 0
@@ -257,60 +257,98 @@
 	  
       "abilities": {
         "agility": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "animalhandling": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "athletics": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "awareness": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "cunning": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "deception": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "endurance": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "fighting": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "healing": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "language": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "knowledge": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "marksmanship": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "persuasion": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "status": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "stealth": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "survival": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "thievery": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "warfare": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         },
         "will": {
+	"passive": 8,
+	"chargen_increase": false,
           "value": 2
         }
       }
@@ -349,10 +387,10 @@
     "weapon": {
       "templates": ["base"],
       "type": "melee",
-      "special": "longblades",
+      "special": "none",
       "training": 0,
       "bulk": 0,
-      "damage": 1,
+      "damage": "1",
       "damageability": "none",
       "quality": "1",
       "notes": "",

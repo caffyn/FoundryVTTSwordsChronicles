@@ -206,6 +206,26 @@
 		<option value="no" {{#if (eq data.config.usestunts "no")}}selected {{/if}}>Disable Stunts</option>
 		</select>
                 </li>
+                <li class=" flexrow">
+		      <label for="data.destiny.total" class="resource-label">Destiny</label>
+                    <input type="text" name="data.destiny.total" value="{{data.destiny.total}}" data-dtype="Number"/>
+		      <label for="data.destiny.invested" class="resource-label">Invested</label>
+                    <input type="text" name="data.destiny.invested" value="{{data.destiny.invested}}" data-dtype="Number"/>
+		      <label for="data.destiny.bonus" class="resource-label">bonus </label>
+                    <input type="text" name="data.destiny.bonus" value="{{data.destiny.bonus}}" data-dtype="number"/>
+		      <label for="data.destiny.base" class="resource-label">base </label>
+                    <input type="text" name="data.destiny.base" value="{{data.destiny.base}}" data-dtype="number"/>
+                </li>
+                <li class="flexrow">
+		      <label for="data.xp.total" class="resource-label">XP Left</label>
+                    <input type="text" name="data.xp.total" value="{{data.xp.total}}" data-dtype="Number"/>
+		      <label for="data.xp.spent" class="resource-label">Misc Spent</label>
+                    <input type="text" name="data.xp.spent" value="{{data.xp.spent}}" data-dtype="Number"/>
+		    <label for="data.xp.chargen" class="resource-label">Chargen</label>
+                    <input type="text" name="data.xp.chargen" value="{{data.xp.chargen}}" data-dtype="Number"/>
+		    <label for="data.xp.earned" class="resource-label">Earned</label>
+                    <input type="text" name="data.xp.earned" value="{{data.xp.earned}}" data-dtype="Number"/>
+                </li>
             </ol>
         </div>
         {{!-- Owned Items Tab --}}
@@ -292,6 +312,11 @@
 		<div>
 			<label for="data.abilities.{{key}}.value" class="resource-label ability rollable" data-rollability="yes" data-ability="{{key}}" title="data.abilities.{{key}}" data-category="ability" data-flavor="Ability Check: {{key}}">{{key}}</label>
 			<input type="text" name="data.abilities.{{key}}.value" value="{{ability.value}}" title="data.abilities.{{key}}.value" data-dtype="Number"/>
+			<label class="resource-label ability">Passive: {{ability.passive}}</label>
+			{{#unless ../data.formation}}
+			<label for="data.abilities.{{key}}.chargen_increase" >Increased at Chargen</label>
+			<input type="checkbox" name="data.abilities.{{key}}.chargen_increase" value=true {{#if ability.chargen_increase}} checked {{/if}}/>
+			{{/unless}}
 		</div>
 		<div>
 		{{#each ability.special as |specialval special|}}

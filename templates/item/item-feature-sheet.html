@@ -37,6 +37,7 @@
 			    <option value="flat"{{#if (eq mod.type "flat")}} selected{{/if}}>flat</option>
 			    <option value="die"{{#if (eq mod.type "die")}} selected{{/if}}>die</option>
 			    <option value="reroll"{{#if (eq mod.type "reroll")}} selected{{/if}}>reroll</option>
+			    <option value="passive"{{#if (eq mod.type "passive")}} selected{{/if}}>passive</option>
 		    </select>
 		    <select name="data.modifiers.{{index}}.effecttype" value={{mod.effecttype}}>
 			    <option value="ability"{{#if (eq mod.effecttype "ability")}} selected{{/if}}>ability</option>
@@ -50,6 +51,8 @@
 			    <option value="composure"{{#if (eq "composure" mod.target)}}selected{{/if}}>composure</option>
 			    <option value="initiative"{{#if (eq "initiative" mod.target)}}selected{{/if}}>initiative</option>
 			    <option value="socialinitiative"{{#if (eq "socialinitiative" mod.target)}}selected{{/if}}>social initiative</option>
+			    <option value="xp"{{#if (eq "xp" mod.target)}}selected{{/if}}>XP cost</option>
+			    <option value="destiny"{{#if (eq "destiny" mod.target)}}selected{{/if}}>XP cost</option>
 		    </select>
 		    {{else}}
 		    <select name="data.modifiers.{{index}}.target">
@@ -57,6 +60,7 @@
 			    <option value="{{val}}"{{#if (eq val mod.target)}}selected{{/if}}>{{val}}</option>
 		{{/each}}
 		    </select>
+		    {{#unless (eq mod.type "passive")}}
 		    <select name="data.modifiers.{{index}}.special">
 			    <option value="none"{{#if (eq curspecial "none")}}selected{{/if}}>All Rolls</option>
 			    {{#each (lookup ../data/modtypes/ability mod.target) as |curval curspecial |}}
@@ -64,6 +68,7 @@
 			    <option value="{{curval}}"{{#if (eq curval mod.special)}}selected{{/if}}>{{curval}}</option>
 		{{/each}}
 		    </select>
+		    {{/unless}}
 		    {{/if}}
 		    <input type="text" class="item-name" name="data.modifiers.{{index}}.effect" value="{{mod.effect}}" title="effect"/>
                     <div class="item-controls">

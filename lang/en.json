@@ -1,9 +1,12 @@
 {
 	"swords.combat.armor": "Armor",
 	"swords.combat.defense": "Total Def",
+	"swords.combat.meleedefense": "Melee Def",
+	"swords.combat.rangeddefense": "Ranged Def",
 	"swords.combat.defensebonus": "Bonus Def",
 	"swords.combat.bulk": "Bulk",
 	"swords.combat.armorpenalty": "Penalty",
-	"swords.combat.formationbonus": "Other Def",
+	"swords.combat.basediscipline": "Base Discipline",
+	"swords.combat.discipline": "Total Discipline",
 	"swords.combat.armorname": "Type"
 }

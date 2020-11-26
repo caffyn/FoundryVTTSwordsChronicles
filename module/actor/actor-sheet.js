@@ -22,10 +22,12 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
     console.log("what now",data);
+
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
+	    console.log('debug',attr);
     }
-
+    console.log('debug');
     // Prepare items.
     if (this.actor.data.type == 'character' || this.actor.data.type == 'unit') {
       this._prepareCharacterItems(data);
@@ -42,6 +44,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
    * @return {undefined}
    */
   _prepareCharacterItems(sheetData) {
+	  console.log('got to prepare');
     const actorData = sheetData.actor;
 
     // Initialize containers.
@@ -61,11 +64,43 @@ export class SwordschroniclesActorSheet extends ActorSheet {
       9: []
     };
     const weapon=[];
+	var totalxp=0;
+	var spentxp=0;
 	 //Initial health and composure calcs
     actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
     if(actorData.type == 'character'){
 	    actorData.data.composure.max=(actorData.data.abilities.will.value * 3);
+	  //Destiny calcs
+	  actorData.data.destiny.total=actorData.data.destiny.base+actorData.data.destiny.bonus-actorData.data.destiny.invested;
 	    }
+	  //Set passive values for stats,start totalling XP costs
+	  //Also doing XP calculations for abilities
+	  console.log(actorData.data.abilities);
+	  for(let i in actorData.data.abilities){
+		  console.log('test',i,actorData.data.abilities[i]);
+		  actorData.data.abilities[i].passive=actorData.data.abilities[i].value*4;
+		  //Special handling for language
+		  if(i=='language'){
+		console.log("language detected");		  
+		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value == 1){
+			  //Value of 1 at chargen is worth 50 free XP
+			spentxp -= 50;
+			  console.log("xp incremental decrease",spentxp);
+		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value > 2){
+			  //First increase costs 10 at chargen
+			  spentxp += (actorData.data.abilities[i].value-2)*30 - 20;
+			  console.log("xp incremental",spentxp);
+		  }else if(actorData.data.abilities[i].value > 2){
+			  //Post chargen increases, all costs are 30/level
+			  spentxp += (actorData.data.abilities[i].value-2)*30;
+			  console.log("xp incremental",spentxp);
+		  }
+		  for(let special in actorData.data.abilities[i].special){
+			spentxp += (actorData.data.abilities[i].special[special]) * 10;
+		  }
+		
+
+	  }
 
 	    // Iterate through items, allocating to containers
 	    // let totalWeight = 0;
@@ -83,7 +118,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 		for(let j in i.data.modifiers){
 			let currentmod=i.data.modifiers[j];
 			//Dropdown switch can lead to invalid conditions. Fixing here, this is probably a temp fix
-			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
+			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'destiny':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
 				console.log("debug: fixing invalid typing",currentmod);
 				i.data.modifiers[j].target='health';
 				currentmod=i.data.modifiers[j];
@@ -91,6 +126,34 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 				console.log("debug: fixing invalid typing",currentmod);
 				i.data.modifiers[j].target='agility';
 				currentmod=i.data.modifiers[j];
+			}else if(currentmod.target=='xp'){
+				console.log('found xp');
+				try{
+				var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				spentxp+=change;
+					console.log("spending xp",change);
+				}catch(error){
+					console.log("formula error",currentmod.effect,actorData);
+				}
+			}else if(currentmod.target=='destiny'){
+				console.log('found destiny');
+				try{
+				var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				actorData.data.destiny.total+=change;
+					console.log("spending destiny",change);
+				}catch(error){
+					console.log("formula error",currentmod.effect,actorData);
+				}
+
+			}else if(currentmod.type=='passive'){
+				try{
+				var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				actorData.data.abilities[currentmod.target].passive+=change;
+				
+				}catch(error){
+					console.log("formula error",currentmod.effect,actorData);
+				}
+
 			}
 			modifiers.push(currentmod);
 			//Now, to apply health and composure bonuses
@@ -135,8 +198,41 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     if(actorData.type == 'character' && actorData.data.composure.value > actorData.data.composure.max){
 	   actorData.data.composure.value=actorData.data.composure.max; 
     }
+	  //TODO: XP spending from abilities. Features have built-in costs where appropriate.
+	totalxp += actorData.data.xp.earned;
+	totalxp += actorData.data.xp.chargen;
+	spentxp += actorData.data.xp.spent;
+	actorData.data.xp.total=totalxp-spentxp;
+
+
     actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus;
     actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus;
+
+if(actorData.type == 'unit'){
+	actorData.data.combat.discipline=actorData.data.combat.basediscipline;
+	actorData.data.combat.rangeddefense=actorData.data.combat.defense;
+	actorData.data.combat.meleedefense=actorData.data.combat.defense;
+	if(actorData.data.formation.selected == 'checkered'){
+		actorData.data.combat.discipline+=3;
+		actorData.data.combat.rangeddefense-=5;
+	}else if(actorData.data.formation.selected == 'phalanx'){
+		actorData.data.combat.rangeddefense-=5;
+		actorData.data.combat.meleedefense+=5;
+	}else if(actorData.data.formation.selected == 'shieldwall'){
+		actordata.data.combat.meleedefense+=5;
+	}else if(actorData.data.formation.selected == 'wedge'){
+		actorData.data.combat.rangeddefense-=5;
+	}else if(actorData.data.formation.selected == 'mob'){
+		actorData.data.combat.defense-=5;
+		actorData.data.combat.meleedefense+=5;
+		actorData.data.combat.rangeddefense-=5;
+		actorData.data.combat.discipline+=6;
+	}else if(actorData.data.formation.selected == 'tortoise'){
+		actorData.data.combat.defense+=5;
+		actorData.data.combat.meleedefense+=5;
+		actorData.data.combat.rangeddefense+=5;
+	}
+}
 
     // Assign and return
     actorData.gear = gear;
@@ -251,13 +347,25 @@ _performRoll(html,dataset){
 	}
 	var bonusflat=parseInt(html.find('[name="bonusflat"]').val());
 	var bonusdice=parseInt(html.find('[name="bonusdice"]').val());
+	var testdice=parseInt(html.find('[name="testdice"]').val());
 	var penaltyflat=parseInt(html.find('[name="penaltyflat"]').val());
 	var penaltydice=parseInt(html.find('[name="penaltydice"]').val());
         var bonus=0;
 	const items=this.actor.data.items;
 	var special="none";
 
+
 	if(dataset.category == "attack"){
+		if(data.formation){
+			//We have formations. Apply formations.
+			if(data.formation=='column'){
+				penaltydice += 1;
+			}
+			if(data.formation=='wedge'){
+				
+			}
+			//TODO: make tortoise not attack?
+		}
 		var id = dataset._id;
 		for(let temp of items){
 			if(temp._id == id){
@@ -365,7 +473,6 @@ _performRoll(html,dataset){
 			}else{
 				var damage=0;
 			}
-			console.log(weapon.damage,data);
 			damage+=new Roll(weapon.damage,data).roll().total;
 		if(weapon.quality==0){
 			//Peasant weapon. 1 die penalty
@@ -398,9 +505,10 @@ _performRoll(html,dataset){
 	}		
 
 	}
-	console.log("reroll dice",rerolldice);
 	var temp;
 	bonusflat-=penaltyflat;
+	total+=testdice;
+	keep+=testdice;
 
 	if(reroll && rerolldice == 0){
     temp= new Roll("(@total)d6kh(@keep)r1+@flat",{total: total, keep: keep,flat: bonusflat});
