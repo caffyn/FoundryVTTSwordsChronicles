@@ -11,6 +11,7 @@ Hooks.once('init', async function() {
     SwordschroniclesItem,
     rollItemMacro
   };
+ 
 
   /**
    * Set an initiative formula for the system

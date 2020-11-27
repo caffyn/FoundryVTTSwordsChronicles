@@ -10,7 +10,16 @@
   "esmodules": ["module/swordschronicles.js"],
   "styles": ["css/swordschronicles.css"],
   "scripts": [],
-  "packs": [],
+  "packs": [
+	  {
+		  "name": "core",
+		  "label": "Core",
+		  "system": "swordschronicles",
+		  "path": "data/core-qualities.db",
+		  "entity": "Item"
+	  }
+		  
+  ],
   "languages": [
     {
       "lang": "en",

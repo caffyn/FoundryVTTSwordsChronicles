@@ -21,13 +21,10 @@ export class SwordschroniclesActorSheet extends ActorSheet {
   getData() {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
-    console.log("what now",data);
 
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
-	    console.log('debug',attr);
     }
-    console.log('debug');
     // Prepare items.
     if (this.actor.data.type == 'character' || this.actor.data.type == 'unit') {
       this._prepareCharacterItems(data);
@@ -44,7 +41,6 @@ export class SwordschroniclesActorSheet extends ActorSheet {
    * @return {undefined}
    */
   _prepareCharacterItems(sheetData) {
-	  console.log('got to prepare');
     const actorData = sheetData.actor;
 
     // Initialize containers.
@@ -66,16 +62,44 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     const weapon=[];
 	var totalxp=0;
 	var spentxp=0;
+	var defbonus=0;
 	 //Initial health and composure calcs
     actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
     if(actorData.type == 'character'){
 	    actorData.data.composure.max=(actorData.data.abilities.will.value * 3);
+	    //Age-specific XP calcs
+	    if(actorData.data.config.age=='youth'){
+		    actorData.data.xp.chargen=160;
+		    actorData.data.destiny.base=7;
+	    }else if(actorData.data.config.age=='adolescent'){
+		    actorData.data.xp.chargen=190;
+		    actorData.data.destiny.base=6;
+	    }else if(actorData.data.config.age=='youngadult'){
+		    actorData.data.xp.chargen=240;
+		    actorData.data.destiny.base=5;
+	    }else if(actorData.data.config.age=='adult'){
+		    actorData.data.xp.chargen=290;
+		    actorData.data.destiny.base=4;
+	    }else if(actorData.data.config.age=='middleage'){
+		    actorData.data.xp.chargen=340;
+		    actorData.data.destiny.base=3;
+	    }else if(actorData.data.config.age=='old'){
+		    actorData.data.xp.chargen=430;
+		    actorData.data.destiny.base=2;
+	    }else if(actorData.data.config.age=='veryold'){
+		    actorData.data.xp.chargen=530;
+		    actorData.data.destiny.base=1;
+	    }else if(actorData.data.config.age=='venerable'){
+		    actorData.data.xp.chargen=600;
+		    actorData.data.destiny.base=0;
+	    }
+	    
 	  //Destiny calcs
-	  actorData.data.destiny.total=actorData.data.destiny.base+actorData.data.destiny.bonus-actorData.data.destiny.invested;
+	  actorData.data.destiny.total=parseInt(actorData.data.destiny.base)+parseInt(actorData.data.destiny.bonus)-parseInt(actorData.data.destiny.invested);
+
 	    }
 	  //Set passive values for stats,start totalling XP costs
 	  //Also doing XP calculations for abilities
-	  console.log(actorData.data.abilities);
 	  var costoffset=2;
 	  for(let i in actorData.data.abilities){
 		  actorData.data.abilities[i].passive=actorData.data.abilities[i].value*4;
@@ -90,15 +114,12 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 		  if(!(i.includes('language')) && actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value == 1){
 			  //Value of 1 at chargen is worth 50 free XP
 			spentxp -= 50;
-			  console.log("xp incremental decrease",spentxp);
 		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value > costoffset){
 			  //First increase costs 10 at chargen
 			  spentxp += (actorData.data.abilities[i].value-costoffset)*30 - 20;
-			  console.log("xp incremental",spentxp);
 		  }else if(actorData.data.abilities[i].value > costoffset){
 			  //Post chargen increases, all costs are 30/level
 			  spentxp += (actorData.data.abilities[i].value-costoffset)*30;
-			  console.log("xp incremental",spentxp);
 		  }
 		  for(let special in actorData.data.abilities[i].special){
 			spentxp += (actorData.data.abilities[i].special[special]) * 10;
@@ -119,15 +140,14 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	      // Append to features.
 	      else if (i.type === 'feature') {
 		features.push(i);
-		console.log("item found",i);
 		for(let j in i.data.modifiers){
 			let currentmod=i.data.modifiers[j];
 			//Dropdown switch can lead to invalid conditions. Fixing here, this is probably a temp fix
-			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'destiny':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
+			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'destiny':0,'combatdef':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
 				console.log("debug: fixing invalid typing",currentmod);
 				i.data.modifiers[j].target='health';
 				currentmod=i.data.modifiers[j];
-			}else if(currentmod.effecttype!="other" &&  (currentmod.target in {'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
+			}else if(currentmod.effecttype!="other" &&  (currentmod.target in {'destiny':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0,'combatdef':0})){
 				console.log("debug: fixing invalid typing",currentmod);
 				i.data.modifiers[j].target='agility';
 				currentmod=i.data.modifiers[j];
@@ -144,7 +164,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 				console.log('found destiny');
 				try{
 				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				actorData.data.destiny.total+=change;
+				actorData.data.destiny.total+=parseInt(change);
 					console.log("spending destiny",change);
 				}catch(error){
 					console.log("formula error",currentmod.effect,actorData);
@@ -180,6 +200,15 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 					console.log("formula error",currentmod.effect,actorData);
 				}
 			}
+			if(currentmod.effecttype=="other" && currentmod.target=='combatdef'){
+				//Compute and add combatdef bonus
+				try{
+				var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				defbonus+=parseInt(change);
+				}catch(error){
+					console.log("formula error",currentmod.effect,actorData);
+				}
+			}
 
 		}
 	      }
@@ -210,7 +239,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	actorData.data.xp.total=totalxp-spentxp;
 
 
-    actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus;
+    actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus+defbonus;
     actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus;
 
 if(actorData.type == 'unit'){
@@ -459,19 +488,30 @@ _performRoll(html,dataset){
 					try{
 						change=new Roll(mod.effect,data).roll().total;
 					}catch(error){
-						console.log("bonus parse failure",error);
+						if(mod.effect!=""){
+
+						console.log("bonus parse failure",currentitem,error);
+						}
 						change=0;
 					}
 					if(mod.type=="flat"){
 						//This should be resolved as a flat bonus/penalty to the roll	
 						bonusflat+=change;
-					}else if(mod.type=="die"){
+					}else if(mod.type=="bonusdie"){
 						//This should grant bonus dice instead
 						total+=change;
+					}else if(mod.type=="testdie"){
+						//This should grant test dice instead
+						total+=change;
+						keep+=change;
 					}else if(mod.type=="reroll"){
 						//Reroll. 
 						rerolldice+=change;
 						reroll=true;
+						if(mod.effect == ""){
+							//Unlimited rerolls if field is blank
+							rerolldice=0;
+						}
 					}
 					}
 				}
@@ -485,7 +525,6 @@ _performRoll(html,dataset){
     //Bonus dice from interface can override normal limits
 	total+=parseInt(bonusdice);
 		//Now, to handle injuries, wounds,fatigue, and frustration
-	console.log("debug",data);
 	if(data.status.fatigue){
 		//Units don't have any of this.
 		if (data.status.fatigue.value) bonusflat -= data.status.fatigue.value;

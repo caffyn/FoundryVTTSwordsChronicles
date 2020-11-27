@@ -205,6 +205,17 @@
 		<option value="yes" {{#if (eq data.config.usestunts "yes")}}selected {{/if}}>Enable Stunts</option>
 		<option value="no" {{#if (eq data.config.usestunts "no")}}selected {{/if}}>Disable Stunts</option>
 		</select>
+		<label for="data.config.age">Starting Age<label>
+		<select name="data.config.age" >
+		<option value="youth" {{#if (eq data.config.age "youth")}}selected {{/if}}>Youth</option>
+		<option value="adolescent" {{#if (eq data.config.age "adolescent")}}selected {{/if}}>Adolescent</option>
+		<option value="youngadult" {{#if (eq data.config.age "youngadult")}}selected {{/if}}>Young Adult</option>
+		<option value="adult" {{#if (eq data.config.age "adult")}}selected {{/if}}>Adult</option>
+		<option value="middleage" {{#if (eq data.config.age "middleage")}}selected {{/if}}>Middle Age</option>
+		<option value="old" {{#if (eq data.config.age "old")}}selected {{/if}}>Old</option>
+		<option value="veryold" {{#if (eq data.config.age "veryold")}}selected {{/if}}>Very Old</option>
+		<option value="venerable" {{#if (eq data.config.age "venerable")}}selected {{/if}}>Venerable</option>
+		</select>
                 </li>
                 <li class=" flexrow">
 		      <label for="data.destiny.total" class="resource-label">Destiny</label>

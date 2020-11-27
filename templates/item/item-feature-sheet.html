@@ -35,7 +35,8 @@
 		    <input type="text" class="item-name" name="data.modifiers.{{index}}.name" value="{{mod.name}}" title="name"/>
 		    <select name="data.modifiers.{{index}}.type"> 
 			    <option value="flat"{{#if (eq mod.type "flat")}} selected{{/if}}>flat</option>
-			    <option value="die"{{#if (eq mod.type "die")}} selected{{/if}}>die</option>
+			    <option value="bonusdie"{{#if (eq mod.type "bonusdie")}} selected{{/if}}>bonus die</option>
+			    <option value="testdie"{{#if (eq mod.type "testdie")}} selected{{/if}}>test die</option>
 			    <option value="reroll"{{#if (eq mod.type "reroll")}} selected{{/if}}>reroll</option>
 			    <option value="passive"{{#if (eq mod.type "passive")}} selected{{/if}}>passive</option>
 		    </select>
@@ -52,7 +53,8 @@
 			    <option value="initiative"{{#if (eq "initiative" mod.target)}}selected{{/if}}>initiative</option>
 			    <option value="socialinitiative"{{#if (eq "socialinitiative" mod.target)}}selected{{/if}}>social initiative</option>
 			    <option value="xp"{{#if (eq "xp" mod.target)}}selected{{/if}}>XP cost</option>
-			    <option value="destiny"{{#if (eq "destiny" mod.target)}}selected{{/if}}>XP cost</option>
+			    <option value="combatdef"{{#if (eq mod.target "combatdef")}} selected{{/if}}>combat DEF</option>
+			    <option value="destiny"{{#if (eq "destiny" mod.target)}}selected{{/if}}>Destiny point</option>
 		    </select>
 		    {{else}}
 		    <select name="data.modifiers.{{index}}.target">
