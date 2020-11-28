@@ -3,5 +3,6 @@ This is based on the excellent Boilerplate system
 
 As of 11/28/2020, this is playable. Remaining features:
 1. Compendium content
-2. Rerolling of 6's for Drawbacks
+2. Movement
 3. UI needs serious work
+4. The Social/Combat turn switcher is in a bad place. 
