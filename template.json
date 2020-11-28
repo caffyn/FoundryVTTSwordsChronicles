@@ -208,9 +208,11 @@
 			"battle": "No Stat Change",
 			"checkered": "+5 Defense vs. Marksmanship,+1D on Fighting tests vs. mobs, +3 to Discipline, slow movement", 
 			"column": "-1D on Fighting tests",
+			"firingline": "Ignore rate of fire, very slow movement, -3 Defense, +3 Discipline",
 			"mob": "-5 Defense, +6 Discipline",
 			"phalanx": "+5 Defense vs. Fighting, -5 Defense vs. Marksmanship, very slow movement",
-			"shieldwall": "+5 Defense vs. Fighting, negates charges, no movement",
+			"pikeandshot": "Combine pikemen and musketeer unit, slow movement, +3 Discipline",
+			"shieldwall": "+5 Defense vs. Fighting, negates charges, no movement, +5 cover to anyone behind",
 			"square": "Negate flank and rear attack bonuses, no movement",
 			"tortoise": "+5 Defense (applied), no attacks, very slow movement",
 			"wedge": "+1D on Fighting tests for charging, -5 vs. Marksmanship"
@@ -253,6 +255,18 @@
 	  "defense": 0,
 	  "defensebonus": 0,
 	  "disposition": 4
+	},
+	"sorcery":{
+	  "defense": 0,
+	  "averting": 0,
+  	  "initiated": false,
+	  "tradition": "none",
+	  "points": {
+		"max": 0,
+	  	"bonus": 0,
+	  	"spent": 0,
+		"current": 0
+	  } 
 	},
       
 	  
@@ -428,7 +442,28 @@
     },
     "spell": {
       "templates": ["base"],
-      "spellLevel": 1
+      "type": "spell",
+      "price": "spent",
+      "learning": "6 weeks Hard (15)",
+      "art": "warding",
+      "resonances": "none",
+      "abilities": ["agility","animalhandling","athletics","awareness","cunning","deception","endurance","fighting","healing","knowledge","marksmanship","persuasion","status","stealth","survival","thievery","warfare","will"],
+      "alignment": {
+	      "ability": "knowledge",
+	      "difficulty": 9,
+	      "flavor": "Spell Effects at Alignment Stage",
+	      "basetime": "10 minutes"
+      },
+      "invocation": {
+	      "ability": "cunning",
+	      "difficulty": 12,
+	      "flavor": "Spell Effects at Invocation Stage",
+	      "basetime": "50 minutes"
+      },
+      "unleashing": {
+	      "flavor": "Spell Effects at Unleashing Stage",
+	      "difficulty": 15
+      }
     }
   }
 }

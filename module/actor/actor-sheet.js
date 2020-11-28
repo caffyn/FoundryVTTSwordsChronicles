@@ -47,22 +47,13 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     const gear = [];
     const features = [];
     const modifiers=[];
-    const spells = {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-      7: [],
-      8: [],
-      9: []
-    };
+    const spells = [];
     const weapon=[];
 	var totalxp=0;
 	var spentxp=0;
 	var defbonus=0;
+	var sorcerypoints=0;
+	var sorcerydefense=0;
 	 //Initial health and composure calcs
     actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
     if(actorData.type == 'character'){
@@ -179,44 +170,58 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 					console.log("formula error",currentmod.effect,actorData);
 				}
 
+			}else if(currentmod.type=='passivepenalty'){
+				try{
+				var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				actorData.data.abilities[currentmod.target].passive-=change;
+				
+				}catch(error){
+					console.log("formula error",currentmod.effect,actorData);
+				}
+
 			}
 			modifiers.push(currentmod);
 			//Now, to apply health and composure bonuses
+			var newchange=0;
+
+			if(currentmod.effect != ""){
+			try{
+			var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				if(currentmod.type=="flatpenalty"){
+			           newchange= -1*parseInt(change);
+				}else{
+
+			           newchange= parseInt(change);
+					}
+			}catch(error){
+				console.log("formula error",currentmod.effect,actorData);
+			}}else{
+				newchange=0;
+			}
 			if(currentmod.effecttype=="other" && currentmod.target=='health'){
 				//Compute and add health bonus
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				actorData.data.health.max+=change;
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
+				actorData.data.health.max+=newchange;
 			}
 			if(currentmod.effecttype=="other" && currentmod.target=='composure'){
-				//Compute and add composure bonus
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				actorData.data.composure.max+=change;
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
+				actorData.data.composure.max+=newchange;
 			}
 			if(currentmod.effecttype=="other" && currentmod.target=='combatdef'){
 				//Compute and add combatdef bonus
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				defbonus+=parseInt(change);
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
+				defbonus+=newchange;
+			}
+			if(currentmod.effecttype=="magic" && currentmod.target=='sorcerypoint'){
+				sorcerypoints+=newchange;
+			}
+			if(currentmod.effecttype=="magic" && currentmod.target=='sorcerydefense'){
+				sorcerydefense+=newchange;
 			}
 
 		}
 	      }
 	      // Append to spells.
 	      else if (i.type === 'spell') {
-		if (i.data.spellLevel != undefined) {
-		  spells[i.data.spellLevel].push(i);
-		}
+		      console.log("adding spell",i);
+		  spells.push(i);
 	      }
 	      else if(i.type === 'weapon'){
 		weapon.push(i);
@@ -238,6 +243,10 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	spentxp += actorData.data.xp.spent;
 	actorData.data.xp.total=totalxp-spentxp;
 
+    actorData.data.sorcery.defense=actorData.data.abilities.cunning.value+actorData.data.abilities.endurance.value+actorData.data.abilities.will.value+actorData.data.sorcery.averting+sorcerydefense;
+    actorData.data.sorcery.points.max=sorcerypoints+actorData.data.sorcery.points.bonus;
+    actorData.data.sorcery.points.current=actorData.data.sorcery.points.max-actorData.data.sorcery.points.spent;
+    console.log("sorc debug",actorData.data.sorcery);
 
     actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus+defbonus;
     actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus;
@@ -248,7 +257,12 @@ if(actorData.type == 'unit'){
 	actorData.data.combat.meleedefense=actorData.data.combat.defense;
 	if(actorData.data.formation.selected == 'checkered'){
 		actorData.data.combat.discipline+=3;
-		actorData.data.combat.rangeddefense-=5;
+		actorData.data.combat.rangeddefense+=5;
+	}else if(actorData.data.formation.selected == 'firingline'){
+		actorData.data.combat.defense-=3;
+		actorData.data.combat.discipline+=3;
+	}else if(actorData.data.formation.selected == 'pikeandshot'){
+		actorData.data.combat.discipline+=3;
 	}else if(actorData.data.formation.selected == 'phalanx'){
 		actorData.data.combat.rangeddefense-=5;
 		actorData.data.combat.meleedefense+=5;
@@ -258,7 +272,7 @@ if(actorData.type == 'unit'){
 		actorData.data.combat.rangeddefense-=5;
 	}else if(actorData.data.formation.selected == 'mob'){
 		actorData.data.combat.defense-=5;
-		actorData.data.combat.meleedefense+=5;
+		actorData.data.combat.meleedefense-=5;
 		actorData.data.combat.rangeddefense-=5;
 		actorData.data.combat.discipline+=6;
 	}else if(actorData.data.formation.selected == 'tortoise'){
@@ -301,6 +315,7 @@ if(actorData.type == 'unit'){
     // Delete Inventory Item
     html.find('.item-delete').click(ev => {
       const li = $(ev.currentTarget).parents(".item");
+	    console.log("debug delete",li,li.data("itemId"));
       this.actor.deleteOwnedItem(li.data("itemId"));
       li.slideUp(200, () => this.render(false));
     });
@@ -416,16 +431,27 @@ _performRoll(html,dataset){
 		}
 	}
 	var bonusflat=parseInt(html.find('[name="bonusflat"]').val());
-	var bonusdice=parseInt(html.find('[name="bonusdice"]').val());
+	var bonusdice=0;
 	var testdice=parseInt(html.find('[name="testdice"]').val());
 	var penaltyflat=parseInt(html.find('[name="penaltyflat"]').val());
 	var penaltydice=parseInt(html.find('[name="penaltydice"]').val());
         var bonus=0;
+	var damage=0;
 	const items=this.actor.data.items;
 	var special="none";
+	var abilityName;
 
-
-	if(dataset.category == "attack"){
+	if(dataset.category=="spell"){
+		//Spellcasting. Special rules apply. 
+		abilityName=dataset.ability;
+		var id = dataset._id;
+		for(let temp of items){
+			if(temp._id == id){
+				var spell=temp.data;
+				var name=temp.name;
+			}
+		}
+	}else if(dataset.category == "attack"){
 		if(data.formation){
 			//We have formations. Apply formations.
 			if(data.formation=='column'){
@@ -443,18 +469,27 @@ _performRoll(html,dataset){
 				var name=temp.name;
 			}
 		}
-		//var weapon = this.actor.data.items[dataset.attindex].data;
 		if(weapon.type == "melee"){
-			    var abilityName="fighting";
+			    abilityName="fighting";
 		}else{
-			    var abilityName="marksmanship";
+			    abilityName="marksmanship";
 		}
 		special=weapon.special;
 		if(special != "none"){
 			bonus=parseInt(data.abilities[abilityName].special[special]);
 		}
+		if(weapon.training >0){
+			if(weapon.training > bonus){
+				bonus=0;
+				testdice -= (weapon.training - bonus);
+			}else{
+				bonus=bonus-weapon.training;
+			}
+
+
+		}
 	}else{
-    		var abilityName=dataset.ability;
+    		abilityName=dataset.ability;
 		special=dataset.specialization;
 
 
@@ -476,30 +511,51 @@ _performRoll(html,dataset){
 
 	var rerolldice=0;
 	var reroll=false;
+	var reroll6=0;
+	var rerollhigh=false;
 
 	//Now, go through modifiers and apply as needed.
 	for(let currentitem of items){
 		if(currentitem.type == 'feature'){
 			for(let index in currentitem.data.modifiers){
 				var mod=currentitem.data.modifiers[index];
-				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special)){
-				//Listed bonus is relevant. Now to parse bonus 
-					var change=0;
-					try{
-						change=new Roll(mod.effect,data).roll().total;
-					}catch(error){
-						if(mod.effect!=""){
+				var change=0;
+				try{
+					change=new Roll(mod.effect,data).roll().total;
+				}catch(error){
+					if(mod.effect!=""){
 
-						console.log("bonus parse failure",currentitem,error);
-						}
-						change=0;
+					console.log("bonus parse failure",currentitem,error);
 					}
+					change=0;
+				}
+				if(mod.type=="flatpenalty"){
+					change=change*-1;
+				}
+				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special) && mod.effecttype=='damage'){
+					damage+=change;
+				}
+				console.log("special is",special);
+				console.log("social attack debug",mod.effecttype,special,mod.special);
+				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special) && (mod.effecttype == 'ability' || dataset.category==mod.effecttype)){
+				//Listed bonus is relevant. Now to parse bonus 
+					console.log("proceeding",mod.type,mod.type=="reroll6");
 					if(mod.type=="flat"){
 						//This should be resolved as a flat bonus/penalty to the roll	
 						bonusflat+=change;
+						
+						
 					}else if(mod.type=="bonusdie"){
 						//This should grant bonus dice instead
-						total+=change;
+						bonusdice+=change;
+					}else if(mod.type=="losebonus"){
+						//This should grant bonus dice instead
+						bonusdice-=change;
+					}else if(mod.type=="penaltydie"){
+						console.log("debug",change,mod.effect);
+						//This should remove test dice
+						total-=change;
+						keep-=change;
 					}else if(mod.type=="testdie"){
 						//This should grant test dice instead
 						total+=change;
@@ -512,8 +568,58 @@ _performRoll(html,dataset){
 							//Unlimited rerolls if field is blank
 							rerolldice=0;
 						}
+					
+					}else if(mod.type=="reroll6"){
+						//Reroll. 
+						reroll6+=change;
+						rerollhigh=true;
+						if(mod.effect == ""){
+							//Unlimited rerolls if field is blank
+							reroll6=0;
+						}
 					}
+				}
+				else if(mod.effecttype=='magic' && ((mod.target=="spells" && dataset.category=="spell" && dataset.subcategory=="spell") || (mod.target=="ritual_align" && dataset.subcategory=="ritual" && dataset.stage=="alignment") || (mod.target=="ritual_invoke" && dataset.subcategory=="ritual" && dataset.stage=="invocation") || (mod.target=="ritual_unleash" && dataset.subcategory=="ritual" && dataset.stage=="unleashing"))){
+					//Magic
+					if(mod.type=="flat"){
+						//This should be resolved as a flat bonus/penalty to the roll	
+						bonusflat+=change;
+						
+					}else if(mod.type=="bonusdie"){
+						//This should grant bonus dice instead
+						bonusdice+=change;
+					}else if(mod.type=="testdie"){
+						//This should grant test dice instead
+						total+=change;
+						keep+=change;
+					}else if(mod.type=="losebonus"){
+						//This should grant bonus dice instead
+						bonusdice-=change;
+					}else if(mod.type=="penaltydie"){
+						console.log("debug",change,mod.effect);
+						//This should remove test dice
+						total-=change;
+						keep-=change;
+					}else if(mod.type=="reroll"){
+						//Reroll. 
+						rerolldice+=change;
+						reroll=true;
+						if(mod.effect == ""){
+							//Unlimited rerolls if field is blank
+							rerolldice=0;
+
+						}
+					
+					}else if(mod.type=="reroll6"){
+						//Reroll. 
+						reroll6+=change;
+						rerollhigh=true;
+						if(mod.effect == ""){
+							//Unlimited rerolls if field is blank
+							reroll6=0;
+						}
 					}
+				}
 				}
 			}
 
@@ -523,7 +629,11 @@ _performRoll(html,dataset){
 		    total=data.abilities[abilityName].value*2;
 	    }
     //Bonus dice from interface can override normal limits
-	total+=parseInt(bonusdice);
+	if(bonusdice > 0){
+		total+=bonusdice;
+	}
+
+	total+=parseInt(html.find('[name="bonusdice"]').val());
 		//Now, to handle injuries, wounds,fatigue, and frustration
 	if(data.status.fatigue){
 		//Units don't have any of this.
@@ -549,9 +659,9 @@ _performRoll(html,dataset){
 
 				  
 			if (weapon.damageability != "none"){
-				var damage=data.abilities[weapon.damageability].value;
+				damage+=data.abilities[weapon.damageability].value;
 			}else{
-				var damage=0;
+				damage+=0;
 			}
 			damage+=new Roll(weapon.damage,data).roll().total;
 		if(weapon.quality==0){
@@ -567,6 +677,18 @@ _performRoll(html,dataset){
 		
 		var flavor="Attacks with "+ name + " for " + damage + " damage";
 
+	}else if(dataset.category=="spell"){
+		console.log("spell debug",spell);
+		if(spell.type=="ritual"){
+			var flavor="Ritual: "+name+", "+dataset.stage+" stage, Effects: ";
+			flavor+=spell[dataset.stage].flavor;
+
+		}else if(spell.type=="spell"){
+
+			var flavor="Casting Spell: "+name+", Effects: ";
+			flavor+=spell['invocation'].flavor;
+
+		}		
 	}
 
 	if(this.actor.data.data.config.usestunts == "yes"){
@@ -589,11 +711,16 @@ _performRoll(html,dataset){
 	bonusflat-=penaltyflat;
 	total+=testdice;
 	keep+=testdice;
-
-	if(reroll && rerolldice == 0){
+	console.log(rerollhigh,reroll6,"reroll");
+	if(rerollhigh && reroll6 == 0){
+    temp= new Roll("(@total)d6kh(@keep)r6+@flat",{total: total, keep: keep,flat: bonusflat});
+	}
+	else if(rerollhigh){
+	temp= new Roll("(@total)d6kh(@keep)r(@limit)=6+@flat",{total: total, keep: keep,limit: reroll6, flat: bonusflat});
+	}else if(reroll && rerolldice == 0){
     temp= new Roll("(@total)d6kh(@keep)r1+@flat",{total: total, keep: keep,flat: bonusflat});
 	}else if(reroll){
-	temp= new Roll("(@total)d6kh(@keep)r(@limit)=1+@flat",{total: total, keep: keep,limit: rerolldice, flat: bonusflat});
+	temp= new Roll("(@total)d6kh(@keep)r(@limit)=1+@flat",{total: total, keep: keep,limit: reroll6, flat: bonusflat});
 	}else{
     temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
 	}

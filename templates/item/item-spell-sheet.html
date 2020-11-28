@@ -8,25 +8,87 @@
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="description">Description</a>
         <a class="item" data-tab="attributes">Attributes</a>
+        <a class="item" data-tab="description">Description</a>
     </nav>
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
+        {{!-- Attributes Tab --}}
+        <div class="tab attributes" data-group="primary" data-tab="attributes">
+            {{!-- As you add new fields, add them in here! --}}
+            <div class="resource">
+	<label class="resource-label" for="data.type">
+	<select name="data.type">
+		<option value="spell"{{#if (eq data.type "spell")}}selected{{/if}}>Spell</option>
+		<option value="ritual"{{#if (eq data.type "ritual")}}selected{{/if}}>Ritual</option>
+	</select>
+	<li class="item flexrow">
+	<label for="data.price">Price</label>
+	<input value="{{data.price}}" name="data.price" type="text"/>
+	</li><li class="item flexrow">
+	<label for="data.learning">Learning</label>
+	<input value="{{data.learning}}" name="data.learning" type="text"/>
+	</li><li class="item flexrow">
+	<label for="data.art">Art</label>
+	<input value="{{data.art}}" name="data.art" type="text"/>
+	</li><li class="item flexrow">
+	<label for="data.resonances">resonances</label>
+	<input value="{{data.resonances}}" name="data.resonances" type="text"/>
+	</li>
+	{{#if (eq data.type "spell")}}
+	<li class="item flexrow">
+	<label for="data.invocation.ability">Ability</label>
+	<select name="data.invocation.ability" type="text"/>
+		{{#each data.abilities as |abl id|}}
+		<option value="{{abl}}" {{#if (eq ../data.invocation.ability abl)}}selected{{/if}}>{{abl}}</option>
+		{{/each}}
+	</select>
+	<label for="data.invocation.difficulty">difficulty</label>
+	<input value="{{data.invocation.difficulty}}" name="data.invocation.difficulty" type="text"/>
+	</li>
+	<textarea name="data.invocation.flavor" rows="3" cols="20">{{data.invocation.flavor}}</textarea>
+		    {{/if}}
+	{{#if (eq data.type "ritual")}}
+	<li class="item flexrow">
+	<label for="data.alignment.ability">Alignment</label>
+	<select name="data.alignment.ability" type="text"/>
+		{{#each data.abilities as |abl id|}}
+		<option value="{{abl}}" {{#if (eq ../data.alignment.ability abl)}}selected{{/if}}>{{abl}}</option>
+		{{/each}}
+	</select>
+	<label for="data.alignment.difficulty">DC</label>
+	<input value="{{data.alignment.difficulty}}" name="data.alignment.difficulty" type="text"/>
+	<label for="data.alignment.basetime">Time</label>
+	<input value="{{data.alignment.basetime}}" name="data.alignment.basetime" type="text"/>
+	</li>
+	<textarea name="data.alignment.flavor" rows="3" cols="20">{{data.alignment.flavor}}</textarea>
+	<li class="item flexrow">
+	<label for="data.invocation.ability">Invocation</label>
+	<select name="data.invocation.ability" type="text"/>
+		{{#each data.abilities as |abl id|}}
+		<option value="{{abl}}" {{#if (eq ../data.invocation.ability abl)}}selected{{/if}}>{{abl}}</option>
+		{{/each}}
+	</select>
+	<label for="data.invocation.difficulty">DC</label>
+	<input value="{{data.invocation.difficulty}}" name="data.invocation.difficulty" type="text"/>
+	<label for="data.invocation.basetime">Time</label>
+	<input value="{{data.invocation.basetime}}" name="data.invocation.basetime" type="text"/>
+	</li>
+	<textarea name="data.invocation.flavor" rows="3" cols="20">{{data.invocation.flavor}}</textarea>
+	<li class="item flexrow">
+	<label for="data.unleashing.difficulty">Unleashing DC</label>
+	<input value="{{data.unleashing.difficulty}}" name="data.unleashing.difficulty" type="text"/>
+	</li>
+	<textarea name="data.unleashing.flavor" rows="3" cols="20">{{data.unleashing.flavor}}</textarea>
+	{{/if}}
+            </div>
+        </div>
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
             {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
         </div>
 
-        {{!-- Attributes Tab --}}
-        <div class="tab attributes" data-group="primary" data-tab="attributes">
-            {{!-- As you add new fields, add them in here! --}}
-            <div class="resource">
-              <label class="resource-label">Spell Level</label>
-                <input type="text" name="data.spellLevel" value="{{data.spellLevel}}" data-dtype="Number"/>
-            </div>
-        </div>
     </section>
 </form>

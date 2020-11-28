@@ -13,9 +13,23 @@
   "packs": [
 	  {
 		  "name": "core",
-		  "label": "Core",
+		  "label": "Core Qualities",
 		  "system": "swordschronicles",
 		  "path": "data/core-qualities.db",
+		  "entity": "Item"
+	  },
+	  {
+		  "name": "coreweapons",
+		  "label": "Core Weapons",
+		  "system": "swordschronicles",
+		  "path": "data/core-weapons.db",
+		  "entity": "Item"
+	  },
+	  {
+		  "name": "coredrawbacks",
+		  "label": "Core Drawbacks",
+		  "system": "swordschronicles",
+		  "path": "data/core-drawbacks.db",
 		  "entity": "Item"
 	  }
 		  
