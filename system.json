@@ -45,8 +45,8 @@
   "gridUnits": "m",
   "primaryTokenAttribute": "health",
   "secondaryTokenAttribute": "composure",
-  "url": "",
-  "manifest": "",
-  "download": "",
+  "url": "https://github.com/caffyn/FoundryVTTSwordsChronicles",
+  "manifest": "https://raw.githubusercontent.com/caffyn/FoundryVTTSwordsChronicles/main/system.json",
+  "download": "https://github.com/caffyn/FoundryVTTSwordsChronicles/raw/main/swordschronicles.zip",
   "license": "LICENSE.txt"
 }
