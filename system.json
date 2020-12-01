@@ -2,7 +2,7 @@
   "name": "swordschronicles",
   "title": "Swordschronicles",
   "description": "The Swords Chronicles system for FoundryVTT!",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "minimumCoreVersion": "0.7.5",
   "compatibleCoreVersion": "0.7.7",
   "templateVersion": 2,
