@@ -6,7 +6,7 @@
   "minimumCoreVersion": "0.7.5",
   "compatibleCoreVersion": "0.7.7",
   "templateVersion": 2,
-  "author": "John Doe",
+  "author": "c4ffeine",
   "esmodules": ["module/swordschronicles.js"],
   "styles": ["css/swordschronicles.css"],
   "scripts": [],
