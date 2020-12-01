@@ -2,7 +2,7 @@
   "name": "swordschronicles",
   "title": "Swordschronicles",
   "description": "The Swords Chronicles system for FoundryVTT!",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "minimumCoreVersion": "0.7.5",
   "compatibleCoreVersion": "0.7.7",
   "templateVersion": 2,
@@ -46,7 +46,7 @@
   "primaryTokenAttribute": "health",
   "secondaryTokenAttribute": "composure",
   "url": "https://github.com/caffyn/FoundryVTTSwordsChronicles",
-  "manifest": "https://raw.githubusercontent.com/caffyn/FoundryVTTSwordsChronicles/main/system.json",
+  "manifest": "https://github.com/caffyn/FoundryVTTSwordsChronicles/raw/main/system.json",
   "download": "https://github.com/caffyn/FoundryVTTSwordsChronicles/raw/main/swordschronicles.zip",
   "license": "LICENSE.txt"
 }
