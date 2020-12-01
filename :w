@@ -157,30 +157,15 @@
         {{!-- Combat Tab --}}
         <div class="tab items" data-group="primary" data-tab="weapon">
             <div class="resources grid grid-6col">
+		    {{#each data.combat as |statusval statusname|}}
 
               <div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.totalbulk">Bulk: {{data.combat.totalbulk}}</label>
-	      </div><div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.defense">Defense: {{data.combat.defense}}</label>
-	      </div>
-	      {{#if data.formation}}
-	      <div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.rangeddefense">Ranged DEF: {{data.combat.rangeddefense}}</label>
-	      </div>
-	      <div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.meleedefense">Melee DEF: {{data.combat.meleedefense}}</label>
-	      </div>
-
-	      {{else}}
-	      <div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.armorpenalty">Armor Penalty: {{data.combat.armorpenalty}}</label>
+		      <label for="data.combat.{{statusname}}" class="resource-label" title="data.combat.{{statusname}}">{{localize (concat "swords.combat." statusname)}}</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+			  <input type="text" name="data.combat.{{statusname}}" value="{{statusval}}" {{#unless (eq statusname "armorname")}}data-dtype="Number" {{/unless}} title="data.combat.{{statusname}}"/>
+                  </div>
               </div>
-	      {{/if}}
-	      <div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.movement.speed">Speed: {{data.combat.movement.speed}}</label>
-	      </div><div class="resource flex-group-center">
-                      <label class="resource-label" title="data.combat.movement.sprint">Sprint: {{data.combat.movement.sprint}}</label>
-	      </div>
+		    {{/each}}
 		 </div>
             <ol class="items-list">
                 <li class="item flexrow item-header">
@@ -190,6 +175,8 @@
                     <a class="item-control item-create" title="Create item" data-type="weapon"><i class="fas fa-plus"></i> Add item</a>
                   </div>
                 </li>
+		{{log "weapons debug"}}
+		{{log actor.weapon}}
 	
             {{#each actor.weapon as |item id|}}
                 <li class="item flexrow" data-item-id="{{item._id}}">
@@ -210,37 +197,31 @@
         {{!-- Config Tab --}}
         <div class="tab items" data-group="primary" data-tab="config">
             <ol class="items-list">
-                <li class="flexrow item-header">
+                <li class="item flexrow item-header">
 		<label for="data.combat.armorname">Armor Worn</label>
 		{{log data.combat}}
 		<input type="text" name="data.combat.armorname" value="{{data.combat.armorname}}" />
 		<label for="data.combat.bulk">Bulk</label>
-		<input type="number" name="data.combat.bulk" value="{{data.combat.bulk}}" />
+		<input type="number" name="data.combat.bulk" value={{data.combat.bulk}} />
 		<label for="data.combat.armor">Armor</label>
-		<input type="number" name="data.combat.armor" value="{{data.combat.armor}}" />
+		<input type="number" name="data.combat.armor" value={{data.combat.armor}} />
 		</li>
-                <li class="flexrow item-header">
+                <li class="item flexrow item-header">
 		<label for="data.combat.bonusdef">Bonus DEF</label>
-		<input type="number" name="data.combat.bonusdef" value="{{data.combat.bonusdef}}" />
-		{{#if data.formation}}"
+		<input type="number" name="data.combat.bonusdef" value={{data.combat.bonusdef}} />
+		{{#if data.formation}}
 		<label for="data.combat.basediscipline">Base Discipline</label>
-		<input type="number" name="data.combat.basediscipline" value="{{data.combat.basediscipline}}" />
-		{{else}}"
+		<input type="number" name="data.combat.basediscipline" value={{data.combat.basediscipline}} />
+		{{else}}
 
 		<label for="data.combat.armorpenalty">Armor Penalty</label>
-		<input type="number" name="data.combat.armorpenalty" value="{{data.combat.armorpenalty}}" />
-		{{/if}}"
+		<input type="number" name="data.combat.armorpenalty" value={{data.combat.armorpenalty}} />
+		{{/if}}
 		</li>
-                <li class="flexrow item-header">
-		{{#unless data.formation}}
+                <li class="item flexrow item-header">
 		<select name="data.config.usestunts" >
 		<option value="yes" {{#if (eq data.config.usestunts "yes")}}selected {{/if}}>Enable Stunts</option>
 		<option value="no" {{#if (eq data.config.usestunts "no")}}selected {{/if}}>Disable Stunts</option>
-		</select>
-		<label for="data.config.stuntbonus">Stunt Mod<label>
-		<select name="data.config.stuntbonus" >
-		<option value=0 {{#if (eq data.config.stuntbonus "yes")}}selected {{/if}}>0</option>
-		<option value=1 {{#if (eq data.config.stuntbonus 1)}}selected {{/if}}>1</option>
 		</select>
 		<label for="data.config.age">Starting Age<label>
 		<select name="data.config.age" >
@@ -253,7 +234,6 @@
 		<option value="veryold" {{#if (eq data.config.age "veryold")}}selected {{/if}}>Very Old</option>
 		<option value="venerable" {{#if (eq data.config.age "venerable")}}selected {{/if}}>Venerable</option>
 		</select>
-		{{/unless}}
                 </li>
                 <li class=" flexrow">
 		      <label for="data.destiny.total" class="resource-label">Destiny</label>
@@ -411,3 +391,4 @@
 			
     </section>
 </form>
+

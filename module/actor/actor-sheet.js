@@ -49,78 +49,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
     const modifiers=[];
     const spells = [];
     const weapon=[];
-	var totalxp=0;
-	var spentxp=0;
-	var defbonus=0;
-	var sorcerypoints=0;
-	var sorcerydefense=0;
-	 //Initial health and composure calcs
-    actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
-    if(actorData.type == 'character'){
-	    actorData.data.composure.max=(actorData.data.abilities.will.value * 3);
-	    //Age-specific XP calcs
-	    if(actorData.data.config.age=='youth'){
-		    actorData.data.xp.chargen=160;
-		    actorData.data.destiny.base=7;
-	    }else if(actorData.data.config.age=='adolescent'){
-		    actorData.data.xp.chargen=190;
-		    actorData.data.destiny.base=6;
-	    }else if(actorData.data.config.age=='youngadult'){
-		    actorData.data.xp.chargen=240;
-		    actorData.data.destiny.base=5;
-	    }else if(actorData.data.config.age=='adult'){
-		    actorData.data.xp.chargen=290;
-		    actorData.data.destiny.base=4;
-	    }else if(actorData.data.config.age=='middleage'){
-		    actorData.data.xp.chargen=340;
-		    actorData.data.destiny.base=3;
-	    }else if(actorData.data.config.age=='old'){
-		    actorData.data.xp.chargen=430;
-		    actorData.data.destiny.base=2;
-	    }else if(actorData.data.config.age=='veryold'){
-		    actorData.data.xp.chargen=530;
-		    actorData.data.destiny.base=1;
-	    }else if(actorData.data.config.age=='venerable'){
-		    actorData.data.xp.chargen=600;
-		    actorData.data.destiny.base=0;
-	    }
-	    
-	  //Destiny calcs
-	  actorData.data.destiny.total=parseInt(actorData.data.destiny.base)+parseInt(actorData.data.destiny.bonus)-parseInt(actorData.data.destiny.invested);
-
-	    }
-	  //Set passive values for stats,start totalling XP costs
-	  //Also doing XP calculations for abilities
-	  var costoffset=2;
-	  for(let i in actorData.data.abilities){
-		  actorData.data.abilities[i].passive=actorData.data.abilities[i].value*4;
-		  //Special handling for language
-		  if(i.includes('language') && i != "language1"){
-			//Languages have special handling
-			//First language follows normal rules, further ones don't get the 2 "free" ranks
-			costoffset=0;
-		  }else{
-			  costoffset=2;
-		  }
-		  if(!(i.includes('language')) && actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value == 1){
-			  //Value of 1 at chargen is worth 50 free XP
-			spentxp -= 50;
-		  }else if(actorData.data.abilities[i].chargen_increase && actorData.data.abilities[i].value > costoffset){
-			  //First increase costs 10 at chargen
-			  spentxp += (actorData.data.abilities[i].value-costoffset)*30 - 20;
-		  }else if(actorData.data.abilities[i].value > costoffset){
-			  //Post chargen increases, all costs are 30/level
-			  spentxp += (actorData.data.abilities[i].value-costoffset)*30;
-		  }
-		  for(let special in actorData.data.abilities[i].special){
-			spentxp += (actorData.data.abilities[i].special[special]) * 10;
-		  }
-		
-
-	  }
-
 	    // Iterate through items, allocating to containers
-	    // let totalWeight = 0;
 	    for (let i of sheetData.items) {
 	      let item = i.data;
 	      i.img = i.img || DEFAULT_TOKEN;
@@ -131,158 +60,27 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	      // Append to features.
 	      else if (i.type === 'feature') {
 		features.push(i);
-		for(let j in i.data.modifiers){
-			let currentmod=i.data.modifiers[j];
-			//Dropdown switch can lead to invalid conditions. Fixing here, this is probably a temp fix
-			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'destiny':0,'combatdef':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0})){
-				console.log("debug: fixing invalid typing",currentmod);
-				i.data.modifiers[j].target='health';
-				currentmod=i.data.modifiers[j];
-			}else if(currentmod.effecttype!="other" &&  (currentmod.target in {'destiny':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0,'combatdef':0})){
-				console.log("debug: fixing invalid typing",currentmod);
-				i.data.modifiers[j].target='agility';
-				currentmod=i.data.modifiers[j];
-			}else if(currentmod.target=='xp'){
-				console.log('found xp');
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				spentxp+=change;
-					console.log("spending xp",change);
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
-			}else if(currentmod.target=='destiny'){
-				console.log('found destiny');
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				actorData.data.destiny.total+=parseInt(change);
-					console.log("spending destiny",change);
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
-
-			}else if(currentmod.type=='passive'){
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				actorData.data.abilities[currentmod.target].passive+=change;
-				
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
-
-			}else if(currentmod.type=='passivepenalty'){
-				try{
-				var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				actorData.data.abilities[currentmod.target].passive-=change;
-				
-				}catch(error){
-					console.log("formula error",currentmod.effect,actorData);
-				}
-
-			}
-			modifiers.push(currentmod);
-			//Now, to apply health and composure bonuses
-			var newchange=0;
-
-			if(currentmod.effect != ""){
-			try{
-			var change=new Roll(currentmod.effect,actorData.data).roll().total;
-				if(currentmod.type=="flatpenalty"){
-			           newchange= -1*parseInt(change);
-				}else{
-
-			           newchange= parseInt(change);
-					}
-			}catch(error){
-				console.log("formula error",currentmod.effect,actorData);
-			}}else{
-				newchange=0;
-			}
-			if(currentmod.effecttype=="other" && currentmod.target=='health'){
-				//Compute and add health bonus
-				actorData.data.health.max+=newchange;
-			}
-			if(currentmod.effecttype=="other" && currentmod.target=='composure'){
-				actorData.data.composure.max+=newchange;
-			}
-			if(currentmod.effecttype=="other" && currentmod.target=='combatdef'){
-				//Compute and add combatdef bonus
-				defbonus+=newchange;
-			}
-			if(currentmod.effecttype=="magic" && currentmod.target=='sorcerypoint'){
-				sorcerypoints+=newchange;
-			}
-			if(currentmod.effecttype=="magic" && currentmod.target=='sorcerydefense'){
-				sorcerydefense+=newchange;
-			}
-
-		}
-	      }
-	      // Append to spells.
-	      else if (i.type === 'spell') {
-		      console.log("adding spell",i);
-		  spells.push(i);
-	      }
-	      else if(i.type === 'weapon'){
-		weapon.push(i);
-	      }
-	    }
+		                      for(let j in i.data.modifiers){
+                        let currentmod=i.data.modifiers[j];
+                        modifiers.push(currentmod);
+                }
 
 
-	    //Health and composure final calcs
+		      }
+		      // Append to spells.
+		      else if (i.type === 'spell') {
+			  spells.push(i);
+		      }
+		      else if(i.type === 'weapon'){
+			weapon.push(i);
+		      }
+		    }
 
-	    if(actorData.data.health.value > actorData.data.health.max){
-	   actorData.data.health.value=actorData.data.health.max; 
-    }
-    if(actorData.type == 'character' && actorData.data.composure.value > actorData.data.composure.max){
-	   actorData.data.composure.value=actorData.data.composure.max; 
-    }
-	  //TODO: XP spending from abilities. Features have built-in costs where appropriate.
-	totalxp += actorData.data.xp.earned;
-	totalxp += actorData.data.xp.chargen;
-	spentxp += actorData.data.xp.spent;
-	actorData.data.xp.total=totalxp-spentxp;
 
-    actorData.data.sorcery.defense=actorData.data.abilities.cunning.value+actorData.data.abilities.endurance.value+actorData.data.abilities.will.value+actorData.data.sorcery.averting+sorcerydefense;
-    actorData.data.sorcery.points.max=sorcerypoints+actorData.data.sorcery.points.bonus;
-    actorData.data.sorcery.points.current=actorData.data.sorcery.points.max-actorData.data.sorcery.points.spent;
-    console.log("sorc debug",actorData.data.sorcery);
-
-    actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus+defbonus;
-    actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus;
-
-if(actorData.type == 'unit'){
-	actorData.data.combat.discipline=actorData.data.combat.basediscipline;
-	actorData.data.combat.rangeddefense=actorData.data.combat.defense;
-	actorData.data.combat.meleedefense=actorData.data.combat.defense;
-	if(actorData.data.formation.selected == 'checkered'){
-		actorData.data.combat.discipline+=3;
-		actorData.data.combat.rangeddefense+=5;
-	}else if(actorData.data.formation.selected == 'firingline'){
-		actorData.data.combat.defense-=3;
-		actorData.data.combat.discipline+=3;
-	}else if(actorData.data.formation.selected == 'pikeandshot'){
-		actorData.data.combat.discipline+=3;
-	}else if(actorData.data.formation.selected == 'phalanx'){
-		actorData.data.combat.rangeddefense-=5;
-		actorData.data.combat.meleedefense+=5;
-	}else if(actorData.data.formation.selected == 'shieldwall'){
-		actorData.data.combat.meleedefense+=5;
-	}else if(actorData.data.formation.selected == 'wedge'){
-		actorData.data.combat.rangeddefense-=5;
-	}else if(actorData.data.formation.selected == 'mob'){
-		actorData.data.combat.defense-=5;
-		actorData.data.combat.meleedefense-=5;
-		actorData.data.combat.rangeddefense-=5;
-		actorData.data.combat.discipline+=6;
-	}else if(actorData.data.formation.selected == 'tortoise'){
-		actorData.data.combat.defense+=5;
-		actorData.data.combat.meleedefense+=5;
-		actorData.data.combat.rangeddefense+=5;
-	}
-}
+		    //Health and composure final calcs
 
     // Assign and return
+    console.log('modifiers',modifiers);
     actorData.gear = gear;
     actorData.features = features;
     actorData.modifiers = modifiers;
@@ -440,8 +238,11 @@ _performRoll(html,dataset){
 	const items=this.actor.data.items;
 	var special="none";
 	var abilityName;
-
-	if(dataset.category=="spell"){
+	if(dataset.category=="avert"){
+		abilityName="will";
+		special="dedication";
+    		bonus=parseInt(data.abilities.will.special.dedication);
+	}else if(dataset.category=="spell"){
 		//Spellcasting. Special rules apply. 
 		abilityName=dataset.ability;
 		var id = dataset._id;
@@ -579,7 +380,7 @@ _performRoll(html,dataset){
 						}
 					}
 				}
-				else if(mod.effecttype=='magic' && ((mod.target=="spells" && dataset.category=="spell" && dataset.subcategory=="spell") || (mod.target=="ritual_align" && dataset.subcategory=="ritual" && dataset.stage=="alignment") || (mod.target=="ritual_invoke" && dataset.subcategory=="ritual" && dataset.stage=="invocation") || (mod.target=="ritual_unleash" && dataset.subcategory=="ritual" && dataset.stage=="unleashing"))){
+				else if(mod.effecttype=='magic' && ((mod.target=="spells" && dataset.category=="spell" && dataset.subcategory=="spell") || (mod.target=="ritual_align" && dataset.subcategory=="ritual" && dataset.stage=="alignment") || (mod.target=="ritual_invoke" && dataset.subcategory=="ritual" && dataset.stage=="invocation") || (mod.target=="ritual_unleash" && dataset.subcategory=="ritual" && dataset.stage=="unleashing") || (mod.target=="avert" && dataset.category=="avert" ))){
 					//Magic
 					if(mod.type=="flat"){
 						//This should be resolved as a flat bonus/penalty to the roll	
@@ -644,7 +445,7 @@ _performRoll(html,dataset){
 		if(dataset.category == "ability"){
 			/**This is an ability roll(**/
 		    var flavor="Rolling "+abilityName+", specialization: ";
-	//Check for armor bulk. Applies penalty to Agility tests
+	//Check for armor penalty. Applies penalty to Agility tests
 	if(abilityName == 'agility'){
 		penaltyflat+=data.combat.armorpenalty;
 	}
@@ -655,12 +456,14 @@ _performRoll(html,dataset){
 			var damage=data.abilities[dataset.damage].value;
 			flavor += " for "+damage+" damage"; 
 			keep -= data.status.frustrations.value;
+		}else if(dataset.category == "avert"){
+			var flavor="Avert Magic: ";
+			bonusflat+=data.sorcery.averting;
 		}else if(dataset.category == "attack"){
 
 				  
 			if (weapon.damageability != "none"){
-				damage+=data.abilities[weapon.damageability].value;
-			}else{
+g			}else{
 				damage+=0;
 			}
 			damage+=new Roll(weapon.damage,data).roll().total;
@@ -711,7 +514,6 @@ _performRoll(html,dataset){
 	bonusflat-=penaltyflat;
 	total+=testdice;
 	keep+=testdice;
-	console.log(rerollhigh,reroll6,"reroll");
 	if(rerollhigh && reroll6 == 0){
     temp= new Roll("(@total)d6kh(@keep)r6+@flat",{total: total, keep: keep,flat: bonusflat});
 	}

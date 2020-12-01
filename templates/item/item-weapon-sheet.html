@@ -52,6 +52,12 @@
                   <input type="text" name="data.damage" value="{{data.damage}}"size="4"/>
 		  <label class="resource-label">Notes</label>
                   <input type="text" name="data.notes" value="{{data.notes}}" />
+		  <label for="data.location" class="resource-label">Equipped?</label>
+		  <select name="data.location">
+			  <option value="equipped" {{#if (eq data.location "equipped")}}selected{{/if}}>Equipped</option>
+			  <option value="carried" {{#if (eq data.location "carried")}}selected{{/if}}>Carried</option>
+			  <option value="stored" {{#if (eq data.location "stored")}}selected{{/if}}>Stored</option>
+		  </select>
               </div>
 		
             {{!-- As you add new fields, add them in here! --}}

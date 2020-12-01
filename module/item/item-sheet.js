@@ -70,7 +70,7 @@ export class SwordschroniclesItemSheet extends ItemSheet {
 
 async _addModifier(li){
 	const itemId=li.data("itemId");
-	console.log("add test",this);
+	console.log("add test",this.object.data.data);
 	const item=this.object;
 	//const item=this.actor.getOwnedItem(itemId);
 	var data=item.data.data;

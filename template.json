@@ -162,8 +162,7 @@
 	  "stuntbonus": 0
 	},
 	"combat": {
-	  "armorpenalty": 0,
-	  "armorname": ""
+	  "armorpenalty": 0
 	},
 	"destiny":{
 	  "total": 1,
@@ -246,7 +245,14 @@
 	"status":{
 	},
 	"combat": {
+		  "movement": {
+		    "speed": 0,
+		    "sprint": 0,
+		    "bonus": 0
+		  },
+	  "armorname": "",
 	  "bulk": 0,
+	  "totalbulk": 0,
 	  "armor": 0,
 	  "defense": 0,
 	  "defensebonus": 0
@@ -405,6 +411,7 @@
       "type": "melee",
       "special": "none",
       "training": 0,
+      "location": "carried",
       "bulk": 0,
       "damage": "1",
       "damageability": "none",

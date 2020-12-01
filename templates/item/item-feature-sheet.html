@@ -60,12 +60,16 @@
 			    <option value="socialinitiative"{{#if (eq "socialinitiative" mod.target)}}selected{{/if}}>social initiative</option>
 			    <option value="xp"{{#if (eq "xp" mod.target)}}selected{{/if}}>XP cost</option>
 			    <option value="combatdef"{{#if (eq mod.target "combatdef")}} selected{{/if}}>combat DEF</option>
+			    <option value="socialdef"{{#if (eq mod.target "socialdef")}} selected{{/if}}>social DEF</option>
 			    <option value="destiny"{{#if (eq "destiny" mod.target)}}selected{{/if}}>Destiny point</option>
+			    <option value="speed"{{#if (eq "speed" mod.target)}}selected{{/if}}>Base Speed</option>
+			    <option value="sprintmultiplier"{{#if (eq "sprintmultiplier" mod.target)}}selected{{/if}}>Sprint multiplier</option>
 		    </select>
 		    {{else if (eq mod.effecttype "magic")}}
 		    <select name="data.modifiers.{{index}}.target">
 			    <option value="sorcerypoint"{{#if (eq "sorcerypoint" mod.target)}}selected{{/if}}>sorcerypoint</option>
 			    <option value="sorcerydefense"{{#if (eq "sorcerydefense" mod.target)}}selected{{/if}}>sorcerydefense</option>
+			    <option value="avert"{{#if (eq "avert" mod.target)}}selected{{/if}}>avert</option>
 			    <option value="spells"{{#if (eq "spells" mod.target)}}selected{{/if}}>spellcasting</option>
 			    <option value="ritual_align"{{#if (eq "ritual_align" mod.target)}}selected{{/if}}>Align phase</option>
 			    <option value="ritual_invoke"{{#if (eq "ritual_invoke" mod.target)}}selected{{/if}}>Invoke phase</option>
