@@ -4,3 +4,6 @@ This is based on the excellent Boilerplate system
 Known issues:
 1. Destiny Points are not automatically spent or gained when applying Qualities or Drawbacks using Compendium items. 
 2. Sprint movement for drag purposes will not calculate correctly if using the ShowDragDistance module.
+
+Install URL: 
+https://github.com/caffyn/FoundryVTTSwordsChronicles/raw/main/system.json 
