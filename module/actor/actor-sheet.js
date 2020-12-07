@@ -329,6 +329,7 @@ _performRoll(html,dataset){
 				var change=0;
 				try{
 					change=new Roll(mod.effect,data).roll().total;
+					change=Math.round(change);
 				}catch(error){
 					if(mod.effect!=""){
 
