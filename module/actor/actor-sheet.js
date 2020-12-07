@@ -344,7 +344,8 @@ _performRoll(html,dataset){
 				}
 				console.log("special is",special);
 				console.log("social attack debug",mod.effecttype,special,mod.special);
-				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special) && (mod.effecttype == 'ability' || dataset.category==mod.effecttype)){
+				console.log("further",abilityName,mod.target,mod.effecttype,dataset.category);
+				if(abilityName == mod.target && (mod.special == 'none' || special == mod.special) && (mod.effecttype == 'ability' || dataset.category==mod.effecttype || (mod.effecttype == 'attack' && dataset.category=='socialattack'))){
 				//Listed bonus is relevant. Now to parse bonus 
 					console.log("proceeding",mod.type,mod.type=="reroll6");
 					if(mod.type=="flat"){
@@ -375,6 +376,7 @@ _performRoll(html,dataset){
 							//Unlimited rerolls if field is blank
 							rerolldice=0;
 						}
+						console.log("reroll debug",rerolldice);
 					
 					}else if(mod.type=="reroll6"){
 						//Reroll. 
@@ -520,15 +522,16 @@ g			}else{
 	bonusflat-=penaltyflat;
 	total+=testdice;
 	keep+=testdice;
+	console.log("reroll debug",reroll,rerollhigh,rerolldice,reroll6);
 	if(rerollhigh && reroll6 == 0){
     temp= new Roll("(@total)d6kh(@keep)r6+@flat",{total: total, keep: keep,flat: bonusflat});
 	}
 	else if(rerollhigh){
 	temp= new Roll("(@total)d6kh(@keep)r(@limit)=6+@flat",{total: total, keep: keep,limit: reroll6, flat: bonusflat});
 	}else if(reroll && rerolldice == 0){
-    temp= new Roll("(@total)d6kh(@keep)r1+@flat",{total: total, keep: keep,flat: bonusflat});
+    temp= new Roll("(@total)d6r1kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
 	}else if(reroll){
-	temp= new Roll("(@total)d6kh(@keep)r(@limit)=1+@flat",{total: total, keep: keep,limit: reroll6, flat: bonusflat});
+	temp= new Roll("(@total)d6r(@limit)=1kh(@keep)+@flat",{total: total, keep: keep,limit: rerolldice, flat: bonusflat});
 	}else{
     temp= new Roll("(@total)d6kh(@keep)+@flat",{total: total, keep: keep,flat: bonusflat});
 	}
