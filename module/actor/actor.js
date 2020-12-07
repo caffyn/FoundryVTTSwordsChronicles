@@ -35,6 +35,7 @@ export class SwordschroniclesActor extends Actor {
 	var bulk=0;
 	var movebase=4;
 	var movemultiplier=4;
+	var stuntbonus=0;
 	 //Initial health and composure calcs
     actorData.data.health.max=(actorData.data.abilities.endurance.value * 3);
     if(actorData.type == 'character'){
@@ -110,14 +111,21 @@ export class SwordschroniclesActor extends Actor {
 		for(let j in i.data.modifiers){
 			let currentmod=i.data.modifiers[j];
 			//Dropdown switch can lead to invalid conditions. Fixing here, this is probably a temp fix
-			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'destiny':0,'combatdef':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0,"socialdef": 0,'speed':0,'sprintmultiplier':0})){
+			if(currentmod.effecttype=="other" &&  !(currentmod.target in {'destiny':0,'combatdef':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0,"socialdef": 0,'speed':0,'sprintmultiplier':0,"stuntbonus": 0})){
 				console.log("debug: fixing invalid typing",currentmod);
 				i.data.modifiers[j].target='health';
 				currentmod=i.data.modifiers[j];
-			}else if(currentmod.effecttype!="other" &&  (currentmod.target in {'destiny':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0,'combatdef':0,'socialdef':0,'speed':0,'sprintmultiplier':0})){
+			}else if(currentmod.effecttype!="other" &&  (currentmod.target in {'destiny':0,'xp':0,'health':0,'composure':0,'initiative':0,'socialinitiative':0,'combatdef':0,'socialdef':0,'speed':0,'sprintmultiplier':0,"stuntbonus":0})){
 				console.log("debug: fixing invalid typing",currentmod);
 				i.data.modifiers[j].target='agility';
 				currentmod=i.data.modifiers[j];
+			}else if(currentmod.target=='stuntbonus'){
+				try{
+				var change=new Roll(currentmod.effect,actorData.data).roll().total;
+				stuntbonus+=change;
+				}catch(error){
+					console.log("formula error",currentmod.effect,actorData);
+				}
 			}else if(currentmod.target=='xp'){
 				try{
 				var change=new Roll(currentmod.effect,actorData.data).roll().total;
@@ -237,7 +245,9 @@ export class SwordschroniclesActor extends Actor {
 	  if(actorData.data.combat.movement.sprint < 4){
 		  actorData.data.combat.movement.sprint=4;
 	  }
+	  console.log("setting stunt bonus",actorData.data.config.stuntbonus,stuntbonus);
 
+	  actorData.data.config.stuntbonus=stuntbonus;
 
     actorData.data.sorcery.defense=actorData.data.abilities.cunning.value+actorData.data.abilities.endurance.value+actorData.data.abilities.will.value+actorData.data.sorcery.averting+sorcerydefense;
     actorData.data.sorcery.points.max=sorcerypoints+actorData.data.sorcery.points.bonus;

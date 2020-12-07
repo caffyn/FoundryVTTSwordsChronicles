@@ -11,6 +11,7 @@ export class SwordschroniclesActorSheet extends ActorSheet {
       template: "systems/swordschronicles/templates/actor/actor-sheet.html",
       width: 600,
       height: 600,
+      stunts: game.settings.get("swordschronicles","stunts"), 
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
     });
   }
@@ -197,10 +198,15 @@ export class SwordschroniclesActorSheet extends ActorSheet {
 	event.preventDefault();
 	const element = event.currentTarget;
 	const dataset = element.dataset;
+	const stunts=game.settings.get("swordschronicles","stunts");
 	var hasstunt;
 	if(this.actor.data.data.config.usestunts == "yes"){
 		hasstunt=true;
 	}else{
+		hasstunt=false;
+	}
+	//System settings can override user stunt settings
+	if(stunts=="disabled"){
 		hasstunt=false;
 	}
 	const rolltype=dataset.category;

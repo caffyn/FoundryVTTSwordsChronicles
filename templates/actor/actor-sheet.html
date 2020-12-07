@@ -225,22 +225,18 @@
 		{{#if data.formation}}"
 		<label for="data.combat.basediscipline">Base Discipline</label>
 		<input type="number" name="data.combat.basediscipline" value="{{data.combat.basediscipline}}" />
-		{{else}}"
+		{{else}}
 
 		<label for="data.combat.armorpenalty">Armor Penalty</label>
 		<input type="number" name="data.combat.armorpenalty" value="{{data.combat.armorpenalty}}" />
-		{{/if}}"
+		{{/if}}
 		</li>
                 <li class="flexrow item-header">
 		{{#unless data.formation}}
+		{{#if (eq options.stunts "enabled")}}
 		<select name="data.config.usestunts" >
 		<option value="yes" {{#if (eq data.config.usestunts "yes")}}selected {{/if}}>Enable Stunts</option>
 		<option value="no" {{#if (eq data.config.usestunts "no")}}selected {{/if}}>Disable Stunts</option>
-		</select>
-		<label for="data.config.stuntbonus">Stunt Mod<label>
-		<select name="data.config.stuntbonus" >
-		<option value=0 {{#if (eq data.config.stuntbonus "yes")}}selected {{/if}}>0</option>
-		<option value=1 {{#if (eq data.config.stuntbonus 1)}}selected {{/if}}>1</option>
 		</select>
 		<label for="data.config.age">Starting Age<label>
 		<select name="data.config.age" >
@@ -253,6 +249,7 @@
 		<option value="veryold" {{#if (eq data.config.age "veryold")}}selected {{/if}}>Very Old</option>
 		<option value="venerable" {{#if (eq data.config.age "venerable")}}selected {{/if}}>Venerable</option>
 		</select>
+		{{/if}}
 		{{/unless}}
                 </li>
                 <li class=" flexrow">

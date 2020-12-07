@@ -64,6 +64,9 @@
 			    <option value="destiny"{{#if (eq "destiny" mod.target)}}selected{{/if}}>Destiny point</option>
 			    <option value="speed"{{#if (eq "speed" mod.target)}}selected{{/if}}>Base Speed</option>
 			    <option value="sprintmultiplier"{{#if (eq "sprintmultiplier" mod.target)}}selected{{/if}}>Sprint multiplier</option>
+			    {{#if (eq ../options.stunts "enabled")}}
+			    <option value="stuntbonus"{{#if (eq "stuntbonus" mod.target)}}selected{{/if}}>Stunt Bonus</option>
+			    {{/if}}
 		    </select>
 		    {{else if (eq mod.effecttype "magic")}}
 		    <select name="data.modifiers.{{index}}.target">

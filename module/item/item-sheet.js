@@ -8,8 +8,9 @@ export class SwordschroniclesItemSheet extends ItemSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["swordschronicles", "sheet", "item"],
-      width: 520,
-      height: 480,
+      width: 600,
+      height: 600,
+      stunts: game.settings.get("swordschronicles","stunts"),
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
     });
   }

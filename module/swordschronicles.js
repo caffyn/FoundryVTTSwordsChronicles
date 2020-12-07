@@ -17,6 +17,22 @@ Hooks.once('init', async function() {
    * Set an initiative formula for the system
    * @type {String}
    */
+  game.settings.register("swordschronicles","stunts",{
+	name: "Stunt Bonuses",
+	  hint: "This is not a core mechanic",
+	  scope: "world",
+	  config: true,
+	  type: String,
+	  choices: {
+		"enabled": "Stunts Enabled",
+		"disabled": "Stunts Disabled"
+	  },
+	  default: "disabled",
+	  onChange: value => {
+		  console.log("Changing stunt settings to",value);
+	  }
+
+  });
   game.settings.register("swordschronicles","initiativeType",{
 	name: "Initiative Type",
 	  hint: "Regular or Social Combat",
