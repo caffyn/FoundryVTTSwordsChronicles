@@ -247,13 +247,14 @@ export class SwordschroniclesActor extends Actor {
 	  }
 	  console.log("setting stunt bonus",actorData.data.config.stuntbonus,stuntbonus);
 
+	  console.log("def debug",actorData.data.combat);
 	  actorData.data.config.stuntbonus=stuntbonus;
 
     actorData.data.sorcery.defense=actorData.data.abilities.cunning.value+actorData.data.abilities.endurance.value+actorData.data.abilities.will.value+actorData.data.sorcery.averting+sorcerydefense;
     actorData.data.sorcery.points.max=sorcerypoints+actorData.data.sorcery.points.bonus;
     actorData.data.sorcery.points.current=actorData.data.sorcery.points.max-actorData.data.sorcery.points.spent;
 
-    actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus+defbonus;
+    actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus+defbonus+actorData.data.combat.bonusdef;
     actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus+socialdefbonus;
 
 if(actorData.type == 'unit'){
