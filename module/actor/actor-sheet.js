@@ -472,7 +472,7 @@ _performRoll(html,dataset){
 
 				  
 			if (weapon.damageability != "none"){
-g			}else{
+			}else{
 				damage+=0;
 			}
 			damage+=new Roll(weapon.damage,data).roll().total;
