@@ -470,8 +470,9 @@ _performRoll(html,dataset){
 			bonusflat+=data.sorcery.averting;
 		}else if(dataset.category == "attack"){
 
-				  
+				console.log("damage debug",weapon.damageability,damage);  
 			if (weapon.damageability != "none"){
+				damage+=data.abilities[weapon.damageability].value;
 			}else{
 				damage+=0;
 			}
