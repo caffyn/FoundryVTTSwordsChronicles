@@ -16,13 +16,14 @@ export class SwordschroniclesActor extends Actor {
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
-    if (actorData.type === 'character') this._prepareCharacterData(actorData);
+    if (actorData.type === 'character' || actorData.type == 'unit') this._prepareCharacterData(actorData);
   }
 
   /**
    * Prepare Character type specific data
    */
   _prepareCharacterData(actorData) {
+	  console.log("preparing");
 
 
     // Initialize containers.
@@ -256,8 +257,10 @@ export class SwordschroniclesActor extends Actor {
 
     actorData.data.combat.defense=actorData.data.abilities.agility.value+actorData.data.abilities.athletics.value+actorData.data.abilities.awareness.value+actorData.data.combat.defensebonus+defbonus+actorData.data.combat.bonusdef;
     actorData.data.socialcombat.defense=actorData.data.abilities.awareness.value+actorData.data.abilities.cunning.value+actorData.data.abilities.status.value+actorData.data.socialcombat.defensebonus+socialdefbonus;
+	  console.log("type is",actorData.type);
 
 if(actorData.type == 'unit'){
+	console.log("set unit defenses",actorData);
 	actorData.data.combat.discipline=actorData.data.combat.basediscipline;
 	actorData.data.combat.rangeddefense=actorData.data.combat.defense;
 	actorData.data.combat.meleedefense=actorData.data.combat.defense;
@@ -286,6 +289,12 @@ if(actorData.type == 'unit'){
 		actorData.data.combat.meleedefense+=5;
 		actorData.data.combat.rangeddefense+=5;
 	}
+	else {
+		//Assuming it's battle formation
+		console.log('Auto-setting to Battle formation');
+		actorData.data.formation.selected = 'battle';
+	}
+	console.log("set unit defenses",actorData);
 }
 
   }
